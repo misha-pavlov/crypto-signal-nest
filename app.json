@@ -2,6 +2,7 @@
   "expo": {
     "name": "crypto-signal-nest",
     "slug": "crypto-signal-nest",
+    "scheme": "crypto-signal-nest",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -28,6 +29,9 @@
     },
     "updates": {
       "fallbackToCacheTimeout": 0
-    }
+    },
+    "plugins": [
+      "expo-router"
+    ]
   }
 }
