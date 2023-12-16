@@ -3,6 +3,7 @@ import { useCallback } from "react";
 import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
 import { GluestackUIProvider, Text, View } from "@gluestack-ui/themed";
+import { config } from "./config/gluestack-ui.config";
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
@@ -25,9 +26,28 @@ export default function App() {
   }
 
   return (
-    <GluestackUIProvider>
+    <GluestackUIProvider config={config}>
       <View onLayout={onLayoutRootView}>
-        <Text fontFamily="Exo2-Regular" style={{ fontSize: 30 }}>
+        <Text
+          fontSize={30}
+          marginTop={100}
+        >
+          SplashScreen Demo! 👋
+        </Text>
+
+        <Text
+          fontFamily="$bold"
+          fontSize={30}
+          marginTop={100}
+        >
+          SplashScreen Demo! 👋
+        </Text>
+
+        <Text
+          fontFamily="$extraBold"
+          fontSize={30}
+          marginTop={100}
+        >
           SplashScreen Demo! 👋
         </Text>
         <StatusBar style="auto" />
