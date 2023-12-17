@@ -16,13 +16,15 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.milov123.cryptosignalnest"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#1D1D1F"
-      }
+      },
+      "package": "com.milov123.cryptosignalnest"
     },
     "web": {
       "favicon": "./assets/favicon.png"

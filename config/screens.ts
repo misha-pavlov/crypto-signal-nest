@@ -1,4 +1,5 @@
 export const screens = {
+    index: '/index',
     AddNewCrypto: '/AddNewCrypto',
     CheckEmail: '/CheckEmail',
     Crypto: '/Crypto',
