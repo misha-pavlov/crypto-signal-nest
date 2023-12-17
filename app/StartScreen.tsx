@@ -55,6 +55,7 @@ const StartScreen = () => {
       </Center>
 
       <Link href={screens.LogIn} asChild replace>
+        {/* do not move in seperate component via Link ref error */}
         <Button
           backgroundColor={colors.primaryGreen}
           borderRadius={15}
