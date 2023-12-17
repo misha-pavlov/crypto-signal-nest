@@ -2,6 +2,7 @@
   "expo": {
     "name": "crypto-signal-nest",
     "slug": "crypto-signal-nest",
+    "scheme": "crypto-signal-nest",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -15,19 +16,24 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.milov123.cryptosignalnest"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#1D1D1F"
-      }
+      },
+      "package": "com.milov123.cryptosignalnest"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
-    }
+    },
+    "plugins": [
+      "expo-router"
+    ]
   }
 }
