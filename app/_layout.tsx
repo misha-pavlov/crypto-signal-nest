@@ -21,12 +21,14 @@ export default function Layout() {
         name={getScreenName(screens.Crypto)}
         options={{
           presentation: "modal",
+          headerShown: true,
         }}
       />
       <Stack.Screen
         name={getScreenName(screens.AddNewCrypto)}
         options={{
           presentation: "modal",
+          headerShown: true,
         }}
       />
       <Stack.Screen name={getScreenName(screens.Profile)} />
