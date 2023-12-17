@@ -1,4 +1,4 @@
-export const hexToRGBA = (hex: string, alpha = 1) => {
+const hexToRGBA = (hex: string, alpha = 1) => {
   // Ensure the hex value starts with #
   hex = hex.startsWith("#") ? hex : `#${hex}`;
 
@@ -14,3 +14,5 @@ export const hexToRGBA = (hex: string, alpha = 1) => {
   // Return the RGBA string
   return `rgba(${r}, ${g}, ${b}, ${validatedAlpha})`;
 };
+
+export default hexToRGBA;

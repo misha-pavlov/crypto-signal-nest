@@ -6,7 +6,7 @@ import { mmkvStorage } from "./mmkvStorage";
 import { withStyledProvider } from "../hocs/withStyledProvider";
 import { screens } from "../config/screens";
 import { colors } from "../config/colors";
-import { hexToRGBA } from "../helpers/hexToRgba";
+import { hexToRgba } from "../helpers";
 
 const StartScreen = () => {
   return (
@@ -46,7 +46,7 @@ const StartScreen = () => {
             fontSize={16}
             fontFamily="$bold"
             lineHeight={19}
-            color={hexToRGBA(colors.white, 0.5)}
+            color={hexToRgba(colors.white, 0.5)}
           >
             Best way to invest and save money for the future just by using your
             phone
