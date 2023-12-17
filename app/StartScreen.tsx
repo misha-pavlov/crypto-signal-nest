@@ -2,7 +2,7 @@ import { View, Text, Button, Center, VStack } from "@gluestack-ui/themed";
 import { Link } from "expo-router";
 import FastImage from "react-native-fast-image";
 import { mmkvStorageKeys } from "../config/constants";
-import { mmkvStorage } from "./mmkvStorage";
+import { mmkvStorage } from "../config/mmkvStorage";
 import { withStyledProvider } from "../hocs/withStyledProvider";
 import { screens } from "../config/screens";
 import { colors } from "../config/colors";

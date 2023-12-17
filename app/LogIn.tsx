@@ -1,6 +1,6 @@
 import { View, Text, Button } from "@gluestack-ui/themed";
 import { Link } from "expo-router";
-import { mmkvStorage } from "./mmkvStorage";
+import { mmkvStorage } from "../config/mmkvStorage";
 import { mmkvStorageKeys } from "../config/constants";
 import { withStyledProvider } from "../hocs/withStyledProvider";
 import { screens } from "../config/screens";

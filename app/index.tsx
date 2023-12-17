@@ -7,8 +7,8 @@ import { Redirect } from "expo-router";
 import { config } from "../config/gluestack-ui.config";
 import { mmkvStorageKeys } from "../config/constants";
 import { screens } from "../config/screens";
-import { mmkvStorage } from "./mmkvStorage";
 import { colors } from "../config/colors";
+import { mmkvStorage } from "../config/mmkvStorage";
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
