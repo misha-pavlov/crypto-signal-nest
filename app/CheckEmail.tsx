@@ -1,6 +1,6 @@
 import { VStack, Button, Text } from "@gluestack-ui/themed";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { OtpInput } from "react-native-otp-entry";
 import { useState } from "react";
 import { authSafeArea } from "../config/constants";
@@ -10,6 +10,7 @@ import { colors } from "../config/colors";
 
 const CheckEmail = () => {
   const [otp, setOtp] = useState("");
+  const router = useRouter();
   const params = useLocalSearchParams<{
     email: string;
     isFromSignUp: string;
@@ -50,7 +51,7 @@ const CheckEmail = () => {
           borderRadius={10}
           h={40}
           isDisabled={otp.length <= 0}
-          onPress={() => console.log("123")}
+          onPress={() => router.replace({ pathname: screens.NewPassword })}
         >
           <Text color={colors.primaryBlack}>Verify email</Text>
         </Button>

@@ -6,6 +6,8 @@ import { AuthHeader, CSNInput, AuthBackButton } from "../components";
 import { screens } from "../config/screens";
 import { colors } from "../config/colors";
 
+// TODO: add isDisable when email lenth <= 0
+
 const EmailForNewPassword = () => {
   const router = useRouter();
 
