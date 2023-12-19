@@ -27,7 +27,7 @@ const AuthBottom: FC<AuthBottomPropsType> = ({
           {firstText}
         </Text>
 
-        <Link href={href}>
+        <Link href={href} replace>
           <Text
             fontSize={14}
             lineHeight={17}

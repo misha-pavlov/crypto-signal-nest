@@ -14,7 +14,6 @@ import { withStyledProvider } from "../hocs/withStyledProvider";
 import { screens } from "../config/screens";
 import { colors } from "../config/colors";
 import { AuthHeader, CSNInput, AuthBottom } from "../components";
-import { hexToRgba } from "../helpers";
 
 // TODO: add mmkvStorage.delete(mmkvStorageKeys.wasStartScreenShown) on login
 
