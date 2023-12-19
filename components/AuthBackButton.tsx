@@ -13,12 +13,13 @@ import { colors } from "../config/colors";
 type AuthBackButtonPropsType = {
   href: string;
   backText: string;
+  params?: Record<string, unknown>;
 };
 
-const AuthBackButton: FC<AuthBackButtonPropsType> = ({ href, backText }) => {
+const AuthBackButton: FC<AuthBackButtonPropsType> = ({ href, backText, params }) => {
   return (
     <Center>
-      <Link href={href} asChild replace>
+      <Link href={{ pathname: href, params }} asChild replace>
         <TouchableOpacity>
           <HStack alignItems="center">
             <Icon as={ArrowLeftIcon} color={colors.white} />

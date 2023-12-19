@@ -8,12 +8,14 @@ type AuthBottomPropsType = {
   firstText: string;
   secondText: string;
   href: string;
+  onPress?: VoidFunction;
 };
 
 const AuthBottom: FC<AuthBottomPropsType> = ({
   firstText,
   secondText,
   href,
+  onPress,
 }) => {
   return (
     <Center>
@@ -27,16 +29,28 @@ const AuthBottom: FC<AuthBottomPropsType> = ({
           {firstText}
         </Text>
 
-        <Link href={href} replace>
+        {onPress ? (
           <Text
             fontSize={14}
             lineHeight={17}
             fontFamily="$bold"
             color={colors.white}
+            onPress={onPress}
           >
             {secondText}
           </Text>
-        </Link>
+        ) : (
+          <Link href={href} replace>
+            <Text
+              fontSize={14}
+              lineHeight={17}
+              fontFamily="$bold"
+              color={colors.white}
+            >
+              {secondText}
+            </Text>
+          </Link>
+        )}
       </HStack>
     </Center>
   );

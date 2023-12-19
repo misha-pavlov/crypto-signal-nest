@@ -51,7 +51,6 @@ const SignUp = () => {
 
           <VStack space="lg" mt={24}>
             <Button
-              backgroundColor={colors.primaryGreen}
               borderRadius={10}
               h={40}
             >

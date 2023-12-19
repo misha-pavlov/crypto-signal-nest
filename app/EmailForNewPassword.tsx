@@ -1,11 +1,14 @@
 import { VStack, MailIcon, Button, Text } from "@gluestack-ui/themed";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
 import { authSafeArea } from "../config/constants";
 import { AuthHeader, CSNInput, AuthBackButton } from "../components";
 import { screens } from "../config/screens";
 import { colors } from "../config/colors";
 
 const EmailForNewPassword = () => {
+  const router = useRouter();
+
   return (
     <SafeAreaView style={authSafeArea}>
       <VStack px={16} space="4xl">
@@ -21,7 +24,18 @@ const EmailForNewPassword = () => {
           leftIcon={MailIcon}
         />
 
-        <Button backgroundColor={colors.primaryGreen} borderRadius={10} h={40}>
+        <Button
+          borderRadius={10}
+          h={40}
+          onPress={() =>
+            router.replace({
+              pathname: screens.CheckEmail,
+              params: {
+                email: "mishapavlov1704@gmail.com",
+              },
+            })
+          }
+        >
           <Text color={colors.primaryBlack}>Submit</Text>
         </Button>
 

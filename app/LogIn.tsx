@@ -59,7 +59,6 @@ const Login = () => {
 
           <VStack space="lg">
             <Button
-              backgroundColor={colors.primaryGreen}
               borderRadius={10}
               h={40}
             >
