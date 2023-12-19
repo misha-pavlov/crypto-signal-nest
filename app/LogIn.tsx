@@ -13,67 +13,76 @@ import { mmkvStorageKeys } from "../config/constants";
 import { withStyledProvider } from "../hocs/withStyledProvider";
 import { screens } from "../config/screens";
 import { colors } from "../config/colors";
-import { AuthHeader, CSNInput } from "../components";
+import { AuthHeader, CSNInput, AuthBottom } from "../components";
+import { hexToRgba } from "../helpers";
 
 // TODO: add mmkvStorage.delete(mmkvStorageKeys.wasStartScreenShown) on login
 
 const Login = () => {
   return (
     <SafeAreaView style={{ backgroundColor: colors.primaryBlack, flex: 1 }}>
-      <View px={16}>
-        <AuthHeader
-          title="Log in to your account"
-          subTitle="Welcome back! Please enter your details."
-        />
-
-        <VStack mt={24} space="2xl" mb={8}>
-          <CSNInput
-            label="Email"
-            placeholder="Enter unique email"
-            isRequired
-            leftIcon={MailIcon}
+      <VStack justifyContent="space-between" flex={1} px={16}>
+        <View>
+          <AuthHeader
+            title="Log in to your account"
+            subTitle="Welcome back! Please enter your details."
           />
 
-          <CSNInput
-            label="Password"
-            placeholder="Enter valid password"
-            isRequired
-            isPassword
-            leftIcon={LockIcon}
-          />
-        </VStack>
+          <VStack mt={24} space="2xl" mb={8}>
+            <CSNInput
+              label="Email"
+              placeholder="Enter unique email"
+              isRequired
+              leftIcon={MailIcon}
+            />
 
-        <View mt={8} mb={24} alignItems="flex-end">
-          <Link href={screens.EmailForNewPassword}>
-            <Text
-              fontFamily="$bold"
-              fontSize={14}
-              lineHeight={14}
-              color={colors.white}
+            <CSNInput
+              label="Password"
+              placeholder="Enter valid password"
+              isRequired
+              isPassword
+              leftIcon={LockIcon}
+            />
+          </VStack>
+
+          <View mt={8} mb={24} alignItems="flex-end">
+            <Link href={screens.EmailForNewPassword}>
+              <Text
+                fontFamily="$bold"
+                fontSize={14}
+                lineHeight={14}
+                color={colors.white}
+              >
+                Forgot password?
+              </Text>
+            </Link>
+          </View>
+
+          <VStack space="lg">
+            <Button
+              backgroundColor={colors.primaryGreen}
+              borderRadius={10}
+              h={40}
             >
-              Forgot password?
-            </Text>
-          </Link>
+              <Text color={colors.primaryBlack}>Log in</Text>
+            </Button>
+
+            <Button borderRadius={10} h={40}>
+              <Text color={colors.primaryBlack}>Log in with Google</Text>
+            </Button>
+
+            <Button borderRadius={10} h={40}>
+              <Text color={colors.primaryBlack}>Log in with Facebook</Text>
+            </Button>
+          </VStack>
         </View>
 
-        <VStack space="lg">
-          <Button
-            backgroundColor={colors.primaryGreen}
-            borderRadius={10}
-            h={40}
-          >
-            <Text color={colors.primaryBlack}>Log in</Text>
-          </Button>
-
-          <Button borderRadius={10} h={40}>
-            <Text color={colors.primaryBlack}>Log in with Google</Text>
-          </Button>
-
-          <Button borderRadius={10} h={40}>
-            <Text color={colors.primaryBlack}>Log in with Facebook</Text>
-          </Button>
-        </VStack>
-      </View>
+        <AuthBottom
+          firstText="Don't have an account?"
+          secondText="Sign up"
+          href={screens.SignUp}
+        />
+      </VStack>
     </SafeAreaView>
   );
 };
