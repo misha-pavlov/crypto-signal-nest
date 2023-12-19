@@ -9,7 +9,7 @@ import {
 import { Link } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { mmkvStorage } from "../config/mmkvStorage";
-import { mmkvStorageKeys } from "../config/constants";
+import { authSafeArea, mmkvStorageKeys } from "../config/constants";
 import { withStyledProvider } from "../hocs/withStyledProvider";
 import { screens } from "../config/screens";
 import { colors } from "../config/colors";
@@ -19,7 +19,7 @@ import { AuthHeader, CSNInput, AuthBottom } from "../components";
 
 const Login = () => {
   return (
-    <SafeAreaView style={{ backgroundColor: colors.primaryBlack, flex: 1 }}>
+    <SafeAreaView style={authSafeArea}>
       <VStack justifyContent="space-between" flex={1} px={16}>
         <View>
           <AuthHeader

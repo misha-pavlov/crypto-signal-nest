@@ -11,12 +11,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "../config/colors";
 import { AuthHeader, CSNInput, AuthBottom } from "../components";
 import { screens } from "../config/screens";
+import { authSafeArea } from "../config/constants";
 
 // TODO: add mmkvStorage.delete(mmkvStorageKeys.wasStartScreenShown) on login
 
 const SignUp = () => {
   return (
-    <SafeAreaView style={{ backgroundColor: colors.primaryBlack, flex: 1 }}>
+    <SafeAreaView style={authSafeArea}>
       <VStack justifyContent="space-between" flex={1} px={16}>
         <View>
           <AuthHeader
