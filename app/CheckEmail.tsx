@@ -51,7 +51,11 @@ const CheckEmail = () => {
           borderRadius={10}
           h={40}
           isDisabled={otp.length <= 0}
-          onPress={() => router.replace({ pathname: screens.NewPassword })}
+          onPress={() =>
+            router.replace({
+              pathname: isFromSignUp ? screens.LogIn : screens.NewPassword,
+            })
+          }
         >
           <Text color={colors.primaryBlack}>Verify email</Text>
         </Button>
