@@ -42,14 +42,14 @@ export default function index() {
     }
   }, [showRedirect]);
 
-  if (!fontsLoaded) {
-    return null;
-  }
-
   return (
     <GluestackUIProvider config={config} globalStyles={config}>
-      <View onLayout={onLayoutRootView} backgroundColor={colors.primaryBlack} flex={1}>
-        {showRedirect && <Redirect href={getRedirectHref} />}
+      <View
+        onLayout={onLayoutRootView}
+        backgroundColor={colors.primaryBlack}
+        flex={1}
+      >
+        {showRedirect && fontsLoaded && <Redirect href={getRedirectHref} />}
         <StatusBar style="auto" />
       </View>
     </GluestackUIProvider>

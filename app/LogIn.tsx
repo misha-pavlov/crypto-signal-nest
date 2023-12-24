@@ -6,8 +6,10 @@ import {
   MailIcon,
   LockIcon,
 } from "@gluestack-ui/themed";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useEffect, useState } from "react";
+import * as LocalAuthentication from "expo-local-authentication";
 import { mmkvStorage } from "../config/mmkvStorage";
 import { authSafeArea, mmkvStorageKeys } from "../config/constants";
 import { withStyledProvider } from "../hocs/withStyledProvider";
@@ -18,6 +20,33 @@ import { AuthHeader, CSNInput, AuthBottom } from "../components";
 // TODO: add mmkvStorage.delete(mmkvStorageKeys.wasStartScreenShown) on login
 
 const Login = () => {
+  const [isBiometricSupported, setIsBiometricSupported] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const abortController = new AbortController();
+    (async () => {
+      const savedUserId = await mmkvStorage.getString(
+        mmkvStorageKeys.savedUserId
+      );
+
+      if (savedUserId) {
+        const biometricAuth = await LocalAuthentication.authenticateAsync({
+          promptMessage: "Login with Biometrics",
+          disableDeviceFallback: true,
+        });
+
+        if (biometricAuth.success) {
+          console.log("123");
+        }
+      } else {
+        const compatible = await LocalAuthentication.hasHardwareAsync();
+        setIsBiometricSupported(compatible);
+      }
+    })();
+    return () => abortController.abort();
+  });
+
   return (
     <SafeAreaView style={authSafeArea}>
       <VStack justifyContent="space-between" flex={1} px={16}>
@@ -61,6 +90,16 @@ const Login = () => {
             <Button
               borderRadius={10}
               h={40}
+              onPress={() =>
+                isBiometricSupported
+                  ? router.replace({
+                      pathname: screens.FaceId,
+                      params: {
+                        userId: "qwe",
+                      },
+                    })
+                  : console.log("asd")
+              }
             >
               <Text color={colors.primaryBlack}>Log in</Text>
             </Button>
