@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "crypto-signal-nest",
+    "name": "CryptoSignalNest",
     "slug": "crypto-signal-nest",
     "scheme": "crypto-signal-nest",
     "version": "1.0.0",
@@ -33,7 +33,13 @@
       "fallbackToCacheTimeout": 0
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Allow $(PRODUCT_NAME) to use Face ID."
+        }
+      ]
     ]
   }
 }
