@@ -1,5 +1,12 @@
 import { Stack } from "expo-router";
+import { vexo } from "vexo-analytics";
 import { screens } from "../config/screens";
+
+const vexpoApiKey = process.env.EXPO_PUBLIC_VEXO_API_KEY;
+
+if (vexpoApiKey) {
+  vexo(vexpoApiKey);
+}
 
 export default function Layout() {
   const getScreenName = (screenName: string) => screenName.slice(1);
