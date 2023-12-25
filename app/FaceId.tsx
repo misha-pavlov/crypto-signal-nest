@@ -17,7 +17,6 @@ const FaceId = () => {
   const params = useLocalSearchParams<{
     userId: string;
   }>();
-  console.log("🚀 ~ file: FaceId.tsx:17 ~ FaceId ~ params:", params);
 
   const handleBiometricAuth = useCallback(async () => {
     const biometricAuth = await LocalAuthentication.authenticateAsync({
