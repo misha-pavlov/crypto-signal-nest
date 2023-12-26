@@ -6,8 +6,10 @@ import { Octicons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
 import { colors } from "../config/colors";
 import { getPriceHistory, hexToRgba } from "../helpers";
+import { Crypto } from "../types/Crypto.types";
 
 type CryptoListItemPropsType = {
+  crypto: Crypto;
   showRecommendation?: boolean;
   showChart?: boolean;
   isSelectionList?: boolean;
@@ -23,6 +25,7 @@ const CryptoListItem: FC<CryptoListItemPropsType> = ({
   left,
   right,
   isSelected,
+  crypto,
 }) => {
   return (
     <TouchableOpacity>
@@ -54,7 +57,7 @@ const CryptoListItem: FC<CryptoListItemPropsType> = ({
           <FastImage
             style={{ width: 28, height: 28 }}
             source={{
-              uri: "https://static.coinstats.app/coins/1650455588819.png",
+              uri: crypto.icon,
               priority: FastImage.priority.high,
             }}
             resizeMode={FastImage.resizeMode.contain}
@@ -62,14 +65,14 @@ const CryptoListItem: FC<CryptoListItemPropsType> = ({
 
           <View>
             <Text color={colors.white} fontSize={14} lineHeight={17}>
-              Bitcoin
+              {crypto.name}
             </Text>
             <Text
               color={hexToRgba(colors.white, 0.5)}
               fontSize={14}
               lineHeight={17}
             >
-              BTC
+              {crypto.symbol}
             </Text>
           </View>
         </HStack>

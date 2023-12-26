@@ -91,11 +91,25 @@ const Main = () => {
         </Text>
       </HStack>
 
-      <CryptoListItem showRecommendation showChart />
-      <CryptoListItem isSelectionList right />
-      <CryptoListItem isSelectionList right isSelected />
-      <CryptoListItem isSelectionList left />
-      <CryptoListItem isSelectionList left isSelected />
+      <CryptoListItem
+        crypto={mockCryptoArray[0]}
+        showRecommendation
+        showChart
+      />
+      <CryptoListItem crypto={mockCryptoArray[1]} isSelectionList right />
+      <CryptoListItem
+        crypto={mockCryptoArray[2]}
+        isSelectionList
+        right
+        isSelected
+      />
+      <CryptoListItem crypto={mockCryptoArray[3]} isSelectionList left />
+      <CryptoListItem
+        crypto={mockCryptoArray[4]}
+        isSelectionList
+        left
+        isSelected
+      />
       {/* <Center>
         <CryptoSignalNestLoader />
       </Center> */}
@@ -104,3 +118,36 @@ const Main = () => {
 };
 
 export default Main;
+
+const mockCryptoArray = [
+  {
+    id: "bitcoin",
+    icon: "https://static.coinstats.app/coins/1650455588819.png",
+    name: "Bitcoin",
+    symbol: "BTC",
+  },
+  {
+    id: "ethereum",
+    icon: "https://static.coinstats.app/coins/1650455629727.png",
+    name: "Ethereum",
+    symbol: "ETH",
+  },
+  {
+    id: "tether",
+    icon: "https://static.coinstats.app/coins/1650455771843.png",
+    name: "Tether",
+    symbol: "USDT",
+  },
+  {
+    id: "solana",
+    icon: "https://static.coinstats.app/coins/1701234596791.png",
+    name: "Solana",
+    symbol: "SOL",
+  },
+  {
+    id: "binance-coin",
+    icon: "https://static.coinstats.app/coins/1666608145347.png",
+    name: "BNB",
+    symbol: "BNB",
+  },
+];
