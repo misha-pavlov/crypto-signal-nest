@@ -3,9 +3,9 @@ import FastImage from "react-native-fast-image";
 import { FC } from "react";
 import { LineGraph } from "react-native-graph";
 import { Octicons } from "@expo/vector-icons";
+import { TouchableOpacity } from "react-native";
 import { colors } from "../config/colors";
 import { getPriceHistory, hexToRgba } from "../helpers";
-import { TouchableOpacity } from "react-native";
 
 type CryptoListItemPropsType = {
   showRecommendation?: boolean;
