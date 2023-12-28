@@ -1,6 +1,6 @@
 import { HStack, View, Text } from "@gluestack-ui/themed";
 import FastImage from "react-native-fast-image";
-import { FC } from "react";
+import { FC, memo } from "react";
 import { LineGraph } from "react-native-graph";
 import { Octicons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
@@ -16,6 +16,8 @@ type CryptoListItemPropsType = {
   left?: boolean;
   right?: boolean;
   isSelected?: boolean;
+  onLongPress?: VoidFunction;
+  onLeftSelect?: VoidFunction;
 };
 
 const CryptoListItem: FC<CryptoListItemPropsType> = ({
@@ -26,15 +28,17 @@ const CryptoListItem: FC<CryptoListItemPropsType> = ({
   right,
   isSelected,
   crypto,
+  onLongPress,
+  onLeftSelect,
 }) => {
   return (
-    <TouchableOpacity>
+    <TouchableOpacity onLongPress={onLongPress}>
       <HStack
         alignItems="center"
         justifyContent={isSelectionList && right ? "space-between" : undefined}
       >
         {isSelectionList && left && (
-          <TouchableOpacity>
+          <TouchableOpacity onPress={onLeftSelect}>
             <View
               borderWidth={1}
               borderColor={isSelected ? colors.primaryGreen : colors.white}
@@ -119,7 +123,7 @@ const CryptoListItem: FC<CryptoListItemPropsType> = ({
   );
 };
 
-export default CryptoListItem;
+export default memo(CryptoListItem);
 
 const chartMock = [
   [1703531100, 43427.0612, 1, 19.0777],
