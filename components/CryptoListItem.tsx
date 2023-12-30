@@ -18,6 +18,8 @@ type CryptoListItemPropsType = {
   isSelected?: boolean;
   onLongPress?: VoidFunction;
   onLeftSelect?: VoidFunction;
+  onRightSelect?: VoidFunction;
+  onRowPress?: VoidFunction;
 };
 
 const CryptoListItem: FC<CryptoListItemPropsType> = ({
@@ -30,9 +32,11 @@ const CryptoListItem: FC<CryptoListItemPropsType> = ({
   crypto,
   onLongPress,
   onLeftSelect,
+  onRightSelect,
+  onRowPress,
 }) => {
   return (
-    <TouchableOpacity onLongPress={onLongPress}>
+    <TouchableOpacity onLongPress={onLongPress} disabled={!!!onRowPress}>
       <HStack
         alignItems="center"
         justifyContent={isSelectionList && right ? "space-between" : undefined}
@@ -108,7 +112,7 @@ const CryptoListItem: FC<CryptoListItemPropsType> = ({
         )}
 
         {isSelectionList && right && (
-          <TouchableOpacity>
+          <TouchableOpacity onPress={onRightSelect}>
             <View>
               <Octicons
                 name={isSelected ? "check" : "plus"}
