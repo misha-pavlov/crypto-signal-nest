@@ -148,7 +148,7 @@ const CryptoListItem: FC<CryptoListItemPropsType> = ({
           <View>
             {isRecommendationLoading ? (
               <ShimmerPlaceholder
-                width={57}
+                width={87}
                 style={{ borderRadius: 50 }}
                 shimmerColors={[colors.primaryGreen, colors.red, colors.white]}
               />

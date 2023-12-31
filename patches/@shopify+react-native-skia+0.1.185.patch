@@ -1,0 +1,302 @@
+diff --git a/node_modules/@shopify/react-native-skia/android/build.gradle b/node_modules/@shopify/react-native-skia/android/build.gradle
+index 87137f0..0e87962 100644
+--- a/node_modules/@shopify/react-native-skia/android/build.gradle
++++ b/node_modules/@shopify/react-native-skia/android/build.gradle
+@@ -223,7 +223,7 @@ dependencies {
+ 
+ afterEvaluate { project ->
+     task androidSourcesJar(type: Jar) {
+-        classifier = 'sources'
++        archiveClassifier = 'sources'
+         from android.sourceSets.main.java.srcDirs
+         include '**/*.java'
+     }
+diff --git a/node_modules/@shopify/react-native-skia/android/build/intermediates/cxx/abi_configuration_3g452l5m.json b/node_modules/@shopify/react-native-skia/android/build/intermediates/cxx/abi_configuration_3g452l5m.json
+new file mode 100644
+index 0000000..88f00b0
+--- /dev/null
++++ b/node_modules/@shopify/react-native-skia/android/build/intermediates/cxx/abi_configuration_3g452l5m.json
+@@ -0,0 +1,11 @@
++{
++  "allAbis": [
++    "armeabi-v7a",
++    "arm64-v8a",
++    "x86",
++    "x86_64"
++  ],
++  "validAbis": [
++    "ARM64_V8A"
++  ]
++}
+\ No newline at end of file
+diff --git a/node_modules/@shopify/react-native-skia/android/build/intermediates/cxx/abi_configuration_3g452l5m.log b/node_modules/@shopify/react-native-skia/android/build/intermediates/cxx/abi_configuration_3g452l5m.log
+new file mode 100644
+index 0000000..0637a08
+--- /dev/null
++++ b/node_modules/@shopify/react-native-skia/android/build/intermediates/cxx/abi_configuration_3g452l5m.log
+@@ -0,0 +1 @@
++[]
+\ No newline at end of file
+diff --git a/node_modules/@shopify/react-native-skia/android/build/intermediates/cxx/abi_configuration_3g452l5m_key.json b/node_modules/@shopify/react-native-skia/android/build/intermediates/cxx/abi_configuration_3g452l5m_key.json
+new file mode 100644
+index 0000000..dce8ea0
+--- /dev/null
++++ b/node_modules/@shopify/react-native-skia/android/build/intermediates/cxx/abi_configuration_3g452l5m_key.json
+@@ -0,0 +1,24 @@
++{
++  "ndkHandlerSupportedAbis": [
++    "ARMEABI_V7A",
++    "ARM64_V8A",
++    "X86",
++    "X86_64"
++  ],
++  "ndkHandlerDefaultAbis": [
++    "ARMEABI_V7A",
++    "ARM64_V8A",
++    "X86",
++    "X86_64"
++  ],
++  "externalNativeBuildAbiFilters": [
++    "x86_64",
++    "x86",
++    "armeabi-v7a",
++    "arm64-v8a"
++  ],
++  "ndkConfigAbiFilters": [],
++  "splitsFilterAbis": [],
++  "ideBuildOnlyTargetAbi": true,
++  "ideBuildTargetAbi": "arm64-v8a"
++}
+\ No newline at end of file
+diff --git a/node_modules/@shopify/react-native-skia/android/build/intermediates/cxx/create_cxx_tasks_23_timing.txt b/node_modules/@shopify/react-native-skia/android/build/intermediates/cxx/create_cxx_tasks_23_timing.txt
+new file mode 100644
+index 0000000..d9af0e2
+--- /dev/null
++++ b/node_modules/@shopify/react-native-skia/android/build/intermediates/cxx/create_cxx_tasks_23_timing.txt
+@@ -0,0 +1,8 @@
++# C/C++ build system timings
++create_cxx_tasks
++  create-initial-cxx-model
++    create-X86_64-model 15ms
++  create-initial-cxx-model completed in 27ms
++  [gap of 11ms]
++create_cxx_tasks completed in 38ms
++
+diff --git a/node_modules/@shopify/react-native-skia/android/build/intermediates/cxx/ndk_locator_record_5k135902.json b/node_modules/@shopify/react-native-skia/android/build/intermediates/cxx/ndk_locator_record_5k135902.json
+new file mode 100644
+index 0000000..5dea118
+--- /dev/null
++++ b/node_modules/@shopify/react-native-skia/android/build/intermediates/cxx/ndk_locator_record_5k135902.json
+@@ -0,0 +1,11 @@
++{
++  "ndk": "/Users/mp/Library/Android/sdk/ndk/23.1.7779620",
++  "revision": {
++    "mMajor": 23,
++    "mMinor": 1,
++    "mMicro": 7779620,
++    "mPreview": 0,
++    "mPrecision": "MICRO",
++    "mPreviewSeparator": " "
++  }
++}
+\ No newline at end of file
+diff --git a/node_modules/@shopify/react-native-skia/android/build/intermediates/cxx/ndk_locator_record_5k135902.log b/node_modules/@shopify/react-native-skia/android/build/intermediates/cxx/ndk_locator_record_5k135902.log
+new file mode 100644
+index 0000000..9652e9e
+--- /dev/null
++++ b/node_modules/@shopify/react-native-skia/android/build/intermediates/cxx/ndk_locator_record_5k135902.log
+@@ -0,0 +1,86 @@
++[
++  {
++    "level_": 0,
++    "message_": "android.ndkVersion from module build.gradle is [not set]",
++    "file_": "",
++    "tag_": "",
++    "diagnosticCode_": 0,
++    "memoizedIsInitialized": 1,
++    "unknownFields": {
++      "fields": {},
++      "fieldsDescending": {}
++    },
++    "memoizedSize": -1,
++    "memoizedHashCode": -1497375187
++  },
++  {
++    "level_": 0,
++    "message_": "android.ndkPath from module build.gradle is not set",
++    "file_": "",
++    "tag_": "",
++    "diagnosticCode_": 0,
++    "memoizedIsInitialized": 1,
++    "unknownFields": {
++      "fields": {},
++      "fieldsDescending": {}
++    },
++    "memoizedSize": -1,
++    "memoizedHashCode": -705187084
++  },
++  {
++    "level_": 0,
++    "message_": "ndk.dir in local.properties is not set",
++    "file_": "",
++    "tag_": "",
++    "diagnosticCode_": 0,
++    "memoizedIsInitialized": 1,
++    "unknownFields": {
++      "fields": {},
++      "fieldsDescending": {}
++    },
++    "memoizedSize": -1,
++    "memoizedHashCode": -725891
++  },
++  {
++    "level_": 0,
++    "message_": "Not considering ANDROID_NDK_HOME because support was removed after deprecation period.",
++    "file_": "",
++    "tag_": "",
++    "diagnosticCode_": 0,
++    "memoizedIsInitialized": 1,
++    "unknownFields": {
++      "fields": {},
++      "fieldsDescending": {}
++    },
++    "memoizedSize": -1,
++    "memoizedHashCode": 1862088179
++  },
++  {
++    "level_": 0,
++    "message_": "sdkFolder is /Users/mp/Library/Android/sdk",
++    "file_": "",
++    "tag_": "",
++    "diagnosticCode_": 0,
++    "memoizedIsInitialized": 1,
++    "unknownFields": {
++      "fields": {},
++      "fieldsDescending": {}
++    },
++    "memoizedSize": -1,
++    "memoizedHashCode": 1319040405
++  },
++  {
++    "level_": 0,
++    "message_": "Because no explicit NDK was requested, the default version [23.1.7779620] for this Android Gradle Plugin will be used",
++    "file_": "",
++    "tag_": "",
++    "diagnosticCode_": 0,
++    "memoizedIsInitialized": 1,
++    "unknownFields": {
++      "fields": {},
++      "fieldsDescending": {}
++    },
++    "memoizedSize": -1,
++    "memoizedHashCode": -1499256828
++  }
++]
+\ No newline at end of file
+diff --git a/node_modules/@shopify/react-native-skia/android/build/intermediates/cxx/ndk_locator_record_5k135902_key.json b/node_modules/@shopify/react-native-skia/android/build/intermediates/cxx/ndk_locator_record_5k135902_key.json
+new file mode 100644
+index 0000000..f506542
+--- /dev/null
++++ b/node_modules/@shopify/react-native-skia/android/build/intermediates/cxx/ndk_locator_record_5k135902_key.json
+@@ -0,0 +1,7 @@
++{
++  "sdkFolder": "/Users/mp/Library/Android/sdk",
++  "sideBySideNdkFolderNames": [
++    "21.4.7075529",
++    "23.1.7779620"
++  ]
++}
+\ No newline at end of file
+diff --git a/node_modules/@shopify/react-native-skia/android/build/intermediates/prefab_package_header_only/prefab_publication.json/debug b/node_modules/@shopify/react-native-skia/android/build/intermediates/prefab_package_header_only/prefab_publication.json/debug
+new file mode 100644
+index 0000000..b2203ae
+--- /dev/null
++++ b/node_modules/@shopify/react-native-skia/android/build/intermediates/prefab_package_header_only/prefab_publication.json/debug
+@@ -0,0 +1,17 @@
++{
++  "installationFolder": "/Users/mp/Desktop/crypto-signal-nest/node_modules/@shopify/react-native-skia/android/build/intermediates/prefab_package/debug/prefab",
++  "gradlePath": ":shopify_react-native-skia",
++  "packageInfo": {
++    "packageName": "shopify_react-native-skia",
++    "packageSchemaVersion": 2,
++    "packageDependencies": [],
++    "modules": [
++      {
++        "moduleName": "rnskia",
++        "moduleHeaders": "/Users/mp/Desktop/crypto-signal-nest/node_modules/@shopify/react-native-skia/android/build/headers/rnskia",
++        "moduleExportLibraries": [],
++        "abis": []
++      }
++    ]
++  }
++}
+\ No newline at end of file
+diff --git a/node_modules/@shopify/react-native-skia/android/build/intermediates/prefab_package_header_only/prefab_publication.json/release b/node_modules/@shopify/react-native-skia/android/build/intermediates/prefab_package_header_only/prefab_publication.json/release
+new file mode 100644
+index 0000000..6f882f9
+--- /dev/null
++++ b/node_modules/@shopify/react-native-skia/android/build/intermediates/prefab_package_header_only/prefab_publication.json/release
+@@ -0,0 +1,17 @@
++{
++  "installationFolder": "/Users/mp/Desktop/crypto-signal-nest/node_modules/@shopify/react-native-skia/android/build/intermediates/prefab_package/release/prefab",
++  "gradlePath": ":shopify_react-native-skia",
++  "packageInfo": {
++    "packageName": "shopify_react-native-skia",
++    "packageSchemaVersion": 2,
++    "packageDependencies": [],
++    "modules": [
++      {
++        "moduleName": "rnskia",
++        "moduleHeaders": "/Users/mp/Desktop/crypto-signal-nest/node_modules/@shopify/react-native-skia/android/build/headers/rnskia",
++        "moduleExportLibraries": [],
++        "abis": []
++      }
++    ]
++  }
++}
+\ No newline at end of file
+diff --git a/node_modules/@shopify/react-native-skia/android/cpp/api b/node_modules/@shopify/react-native-skia/android/cpp/api
+index b7370ad..47cf8e5 120000
+--- a/node_modules/@shopify/react-native-skia/android/cpp/api
++++ b/node_modules/@shopify/react-native-skia/android/cpp/api
+@@ -1 +1 @@
+-/private/var/folders/9c/ylbflmf93nj7k155l9n7h4x40000gn/T/tmp-41839T8s49PWkV2zS/node_modules/@shopify/react-native-skia/cpp/api
+\ No newline at end of file
++/Users/mp/Desktop/crypto-signal-nest/node_modules/@shopify/react-native-skia/cpp/api
+\ No newline at end of file
+diff --git a/node_modules/@shopify/react-native-skia/android/cpp/jsi b/node_modules/@shopify/react-native-skia/android/cpp/jsi
+index 0aab93e..64488f9 120000
+--- a/node_modules/@shopify/react-native-skia/android/cpp/jsi
++++ b/node_modules/@shopify/react-native-skia/android/cpp/jsi
+@@ -1 +1 @@
+-/private/var/folders/9c/ylbflmf93nj7k155l9n7h4x40000gn/T/tmp-41839T8s49PWkV2zS/node_modules/@shopify/react-native-skia/cpp/jsi
+\ No newline at end of file
++/Users/mp/Desktop/crypto-signal-nest/node_modules/@shopify/react-native-skia/cpp/jsi
+\ No newline at end of file
+diff --git a/node_modules/@shopify/react-native-skia/android/cpp/rnskia b/node_modules/@shopify/react-native-skia/android/cpp/rnskia
+index e62a849..2c70a1a 120000
+--- a/node_modules/@shopify/react-native-skia/android/cpp/rnskia
++++ b/node_modules/@shopify/react-native-skia/android/cpp/rnskia
+@@ -1 +1 @@
+-/private/var/folders/9c/ylbflmf93nj7k155l9n7h4x40000gn/T/tmp-41839T8s49PWkV2zS/node_modules/@shopify/react-native-skia/cpp/rnskia
+\ No newline at end of file
++/Users/mp/Desktop/crypto-signal-nest/node_modules/@shopify/react-native-skia/cpp/rnskia
+\ No newline at end of file
+diff --git a/node_modules/@shopify/react-native-skia/android/cpp/skia b/node_modules/@shopify/react-native-skia/android/cpp/skia
+index ed8064c..4557be5 120000
+--- a/node_modules/@shopify/react-native-skia/android/cpp/skia
++++ b/node_modules/@shopify/react-native-skia/android/cpp/skia
+@@ -1 +1 @@
+-/private/var/folders/9c/ylbflmf93nj7k155l9n7h4x40000gn/T/tmp-41839T8s49PWkV2zS/node_modules/@shopify/react-native-skia/cpp/skia
+\ No newline at end of file
++/Users/mp/Desktop/crypto-signal-nest/node_modules/@shopify/react-native-skia/cpp/skia
+\ No newline at end of file
+diff --git a/node_modules/@shopify/react-native-skia/android/cpp/utils b/node_modules/@shopify/react-native-skia/android/cpp/utils
+index a4411a2..638f97d 120000
+--- a/node_modules/@shopify/react-native-skia/android/cpp/utils
++++ b/node_modules/@shopify/react-native-skia/android/cpp/utils
+@@ -1 +1 @@
+-/private/var/folders/9c/ylbflmf93nj7k155l9n7h4x40000gn/T/tmp-41839T8s49PWkV2zS/node_modules/@shopify/react-native-skia/cpp/utils
+\ No newline at end of file
++/Users/mp/Desktop/crypto-signal-nest/node_modules/@shopify/react-native-skia/cpp/utils
+\ No newline at end of file
