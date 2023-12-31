@@ -48,7 +48,6 @@ const Main = () => {
           <CryptoListItem
             crypto={item}
             showRecommendation={!isEdit}
-            showChart={!isEdit}
             isSelectionList={isEdit}
             left={isEdit}
             isSelected={isSelected}

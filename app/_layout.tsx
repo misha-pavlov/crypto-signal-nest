@@ -1,5 +1,8 @@
 import { Stack } from "expo-router";
 import { vexo } from "vexo-analytics";
+import * as tf from "@tensorflow/tfjs";
+import "@tensorflow/tfjs-react-native";
+import { useEffect } from "react";
 import { screens } from "../config/screens";
 
 const vexpoApiKey = process.env.EXPO_PUBLIC_VEXO_API_KEY;
@@ -10,6 +13,19 @@ if (vexpoApiKey) {
 
 export default function Layout() {
   const getScreenName = (screenName: string) => screenName.slice(1);
+
+  useEffect(() => {
+    const abortController = new AbortController();
+
+    const tfChecker = async () => {
+      await tf.ready();
+      console.log("TF is ready");
+    };
+
+    tfChecker();
+
+    () => abortController.abort();
+  }, []);
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
