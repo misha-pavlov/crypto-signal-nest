@@ -76,8 +76,10 @@ const CryptoListItem: FC<CryptoListItemPropsType> = ({
   return (
     <TouchableOpacity
       onLongPress={onLongPress}
-      disabled={!!!onRowPress}
-      onPress={() => onRowPress && onRowPress(forecast)}
+      disabled={!!!onRowPress || isRecommendationLoading}
+      onPress={() =>
+        onRowPress && !isRecommendationLoading && onRowPress(forecast)
+      }
     >
       <HStack
         alignItems="center"
