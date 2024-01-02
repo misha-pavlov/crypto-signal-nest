@@ -44,7 +44,6 @@ export default function Layout() {
         name={getScreenName(screens.Crypto)}
         options={{
           presentation: "modal",
-          headerShown: true,
         }}
       />
       <Stack.Screen

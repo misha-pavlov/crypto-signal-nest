@@ -53,6 +53,14 @@ const Main = () => {
             isSelected={isSelected}
             onLongPress={drag}
             onLeftSelect={onLeftSelect}
+            onRowPress={(forecast) =>
+              !isEdit
+                ? router.push({
+                    pathname: screens.Crypto,
+                    params: { id, forecast: JSON.stringify(forecast) },
+                  })
+                : undefined
+            }
           />
         </ScaleDecorator>
       );
@@ -197,29 +205,34 @@ const mockCryptoArray = [
     icon: "https://static.coinstats.app/coins/1650455588819.png",
     name: "Bitcoin",
     symbol: "BTC",
+    price: "0",
   },
   {
     id: "ethereum",
     icon: "https://static.coinstats.app/coins/1650455629727.png",
     name: "Ethereum",
     symbol: "ETH",
+    price: "0",
   },
   {
     id: "tether",
     icon: "https://static.coinstats.app/coins/1650455771843.png",
     name: "Tether",
     symbol: "USDT",
+    price: "0",
   },
   {
     id: "solana",
     icon: "https://static.coinstats.app/coins/1701234596791.png",
     name: "Solana",
     symbol: "SOL",
+    price: "0",
   },
   {
     id: "binance-coin",
     icon: "https://static.coinstats.app/coins/1666608145347.png",
     name: "BNB",
     symbol: "BNB",
+    price: "0",
   },
 ];
