@@ -3,8 +3,10 @@ import { useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import FastImage from "react-native-fast-image";
 import { LineGraph } from "react-native-graph";
-import { useWindowDimensions } from "react-native";
-import { useState } from "react";
+import { Share, TouchableOpacity, useWindowDimensions } from "react-native";
+import { useCallback, useRef, useState } from "react";
+import ViewShot from "react-native-view-shot";
+import RNFS from "react-native-fs";
 import { colors } from "../config/colors";
 import { getPercentAndColor, getPriceHistory, hexToRgba } from "../helpers";
 import { ScaleButton } from "../components";
@@ -19,6 +21,7 @@ const Crypto = () => {
   }>();
   const { width } = useWindowDimensions();
   const [selectedFrame, setSelectedFrame] = useState(timeFrames[0]);
+  const viewShotRef = useRef<ViewShot>(null);
 
   const cryptoId = params?.id;
   const forecast = JSON.parse(params?.forecast || "") as ForecastType;
@@ -26,147 +29,183 @@ const Crypto = () => {
   const chartColor = recommendation?.color || colors.grey;
   const chartWidth = width - 32;
 
+  const captureAndShareScreenshot = useCallback(() => {
+    if (viewShotRef?.current) {
+      const viewShot = viewShotRef.current;
+      if (viewShot.capture) {
+        viewShot.capture().then((uri) => {
+          RNFS.readFile(uri, "base64").then((res) => {
+            let urlString = "data:image/jpeg;base64," + res;
+            let options = {
+              title: "CryptoSignalNest",
+              message: `Share ${mockCrypto.name} with friends`,
+              url: urlString,
+              type: "image/png",
+            };
+            Share.share(options)
+              .then((res) => {
+                console.log(res);
+              })
+              .catch((err) => {
+                err && console.log(err);
+              });
+          });
+        });
+      }
+    }
+  }, []);
+
   return (
-    <View flex={1} backgroundColor={colors.grey} p={16}>
-      <Center>
-        <View
-          width={50}
-          height={4}
-          backgroundColor={hexToRgba(colors.white, 0.5)}
-          mb={24}
+    <ViewShot
+      ref={viewShotRef}
+      options={{ format: "png", quality: 1.0 }}
+      style={{ flex: 1 }}
+    >
+      <View flex={1} backgroundColor={colors.grey} p={16}>
+        <Center>
+          <View
+            width={50}
+            height={4}
+            backgroundColor={hexToRgba(colors.white, 0.5)}
+            mb={24}
+          />
+        </Center>
+
+        <View>
+          <TouchableOpacity onPress={captureAndShareScreenshot}>
+            <Ionicons name="share-outline" size={20} color={colors.white} />
+          </TouchableOpacity>
+        </View>
+
+        <Center>
+          <VStack space="lg" alignItems="center" mb={32}>
+            <FastImage
+              style={{ width: 45, height: 45 }}
+              source={{
+                uri: mockCrypto.icon,
+                priority: FastImage.priority.high,
+              }}
+              resizeMode={FastImage.resizeMode.contain}
+            />
+
+            <Center>
+              <Text
+                fontFamily="$bold"
+                fontSize={16}
+                lineHeight={20}
+                color={colors.white}
+              >
+                {mockCrypto.name}
+              </Text>
+              <Text
+                fontFamily="$bold"
+                fontSize={14}
+                lineHeight={17}
+                color={hexToRgba(colors.white, 0.5)}
+              >
+                {mockCrypto.symbol}
+              </Text>
+            </Center>
+
+            <View>
+              <Text
+                fontFamily="$bold"
+                fontSize={24}
+                lineHeight={29}
+                color={colors.white}
+              >
+                ${mockCrypto.price.toFixed(2)}
+              </Text>
+            </View>
+          </VStack>
+        </Center>
+
+        <LineGraph
+          points={getPriceHistory(chartMock)}
+          color={chartColor}
+          enableFadeInMask
+          animated
+          lineThickness={1}
+          style={{ width: chartWidth, height: chartWidth - 64 }}
+          gradientFillColors={[
+            hexToRgba(chartColor, 0.2),
+            hexToRgba(chartColor, 0.1),
+            hexToRgba(chartColor, 0.1),
+          ]}
         />
-      </Center>
 
-      <View>
-        <Ionicons name="share-outline" size={20} color={colors.white} />
-      </View>
-
-      <Center>
-        <VStack space="lg" alignItems="center" mb={32}>
-          <FastImage
-            style={{ width: 45, height: 45 }}
-            source={{
-              uri: mockCrypto.icon,
-              priority: FastImage.priority.high,
-            }}
-            resizeMode={FastImage.resizeMode.contain}
-          />
-
-          <Center>
-            <Text
-              fontFamily="$bold"
-              fontSize={16}
-              lineHeight={20}
-              color={colors.white}
-            >
-              {mockCrypto.name}
-            </Text>
-            <Text
-              fontFamily="$bold"
-              fontSize={14}
-              lineHeight={17}
-              color={hexToRgba(colors.white, 0.5)}
-            >
-              {mockCrypto.symbol}
-            </Text>
-          </Center>
-
-          <View>
-            <Text
-              fontFamily="$bold"
-              fontSize={24}
-              lineHeight={29}
-              color={colors.white}
-            >
-              ${mockCrypto.price.toFixed(2)}
-            </Text>
-          </View>
-        </VStack>
-      </Center>
-
-      <LineGraph
-        points={getPriceHistory(chartMock)}
-        color={chartColor}
-        enableFadeInMask
-        animated
-        lineThickness={1}
-        style={{ width: chartWidth, height: chartWidth - 64 }}
-        gradientFillColors={[
-          hexToRgba(chartColor, 0.2),
-          hexToRgba(chartColor, 0.1),
-          hexToRgba(chartColor, 0.1),
-        ]}
-      />
-
-      <HStack
-        justifyContent="space-between"
-        alignItems="center"
-        mt={32}
-        space="md"
-      >
-        {timeFrames.map((timeFrame) => (
-          <ScaleButton
-            key={timeFrame}
-            borderColor={
-              selectedFrame === timeFrame ? colors.primaryGreen : colors.white
-            }
-            backgroundColor={
-              selectedFrame === timeFrame ? colors.primaryGreen : colors.grey
-            }
-            textColor={selectedFrame === timeFrame ? colors.grey : colors.white}
-            text={timeFrame}
-            onPress={() => setSelectedFrame(timeFrame)}
-            disabled={timeFrame === selectedFrame}
-          />
-        ))}
-      </HStack>
-
-      <Center mt={32}>
-        <Text
-          textTransform="uppercase"
-          color={hexToRgba(colors.white, 0.7)}
-          fontSize={14}
-          lineHeight={17}
+        <HStack
+          justifyContent="space-between"
+          alignItems="center"
+          mt={32}
+          space="md"
         >
-          Recommendations
-        </Text>
-      </Center>
+          {timeFrames.map((timeFrame) => (
+            <ScaleButton
+              key={timeFrame}
+              borderColor={
+                selectedFrame === timeFrame ? colors.primaryGreen : colors.white
+              }
+              backgroundColor={
+                selectedFrame === timeFrame ? colors.primaryGreen : colors.grey
+              }
+              textColor={
+                selectedFrame === timeFrame ? colors.grey : colors.white
+              }
+              text={timeFrame}
+              onPress={() => setSelectedFrame(timeFrame)}
+              disabled={timeFrame === selectedFrame}
+            />
+          ))}
+        </HStack>
 
-      <HStack justifyContent="space-between" alignItems="center" mt={24}>
-        <ScaleButton
-          borderColor={colors.green}
-          backgroundColor={colors.grey}
-          textColor={colors.green}
-          text={`${forecast.buyPercentage}% Buy`}
-          disabled
-          isBold
-          w={100}
-          h={50}
-        />
+        <Center mt={32}>
+          <Text
+            textTransform="uppercase"
+            color={hexToRgba(colors.white, 0.7)}
+            fontSize={14}
+            lineHeight={17}
+          >
+            Recommendations
+          </Text>
+        </Center>
 
-        <ScaleButton
-          borderColor={colors.white}
-          backgroundColor={colors.grey}
-          textColor={colors.white}
-          text={`${forecast.holdPercentage}% Hold`}
-          disabled
-          isBold
-          w={100}
-          h={50}
-        />
+        <HStack justifyContent="space-between" alignItems="center" mt={24}>
+          <ScaleButton
+            borderColor={colors.green}
+            backgroundColor={colors.grey}
+            textColor={colors.green}
+            text={`${forecast.buyPercentage}% Buy`}
+            disabled
+            isBold
+            w={100}
+            h={50}
+          />
 
-        <ScaleButton
-          borderColor={colors.red}
-          backgroundColor={colors.grey}
-          textColor={colors.red}
-          text={`${forecast.sellPercentage}% Sell`}
-          disabled
-          isBold
-          w={100}
-          h={50}
-        />
-      </HStack>
-    </View>
+          <ScaleButton
+            borderColor={colors.white}
+            backgroundColor={colors.grey}
+            textColor={colors.white}
+            text={`${forecast.holdPercentage}% Hold`}
+            disabled
+            isBold
+            w={100}
+            h={50}
+          />
+
+          <ScaleButton
+            borderColor={colors.red}
+            backgroundColor={colors.grey}
+            textColor={colors.red}
+            text={`${forecast.sellPercentage}% Sell`}
+            disabled
+            isBold
+            w={100}
+            h={50}
+          />
+        </HStack>
+      </View>
+    </ViewShot>
   );
 };
 
