@@ -1,9 +1,12 @@
-import { Stack } from "expo-router";
+import { Stack, useNavigation } from "expo-router";
 import { vexo } from "vexo-analytics";
 import * as tf from "@tensorflow/tfjs";
 import "@tensorflow/tfjs-react-native";
 import { useEffect } from "react";
+import { TouchableOpacity } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { screens } from "../config/screens";
+import { colors } from "../config/colors";
 
 const vexpoApiKey = process.env.EXPO_PUBLIC_VEXO_API_KEY;
 
@@ -12,6 +15,7 @@ if (vexpoApiKey) {
 }
 
 export default function Layout() {
+  const navigation = useNavigation();
   const getScreenName = (screenName: string) => screenName.slice(1);
 
   useEffect(() => {
@@ -28,7 +32,7 @@ export default function Layout() {
   }, []);
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
+    <Stack screenOptions={{ headerShown: false, headerShadowVisible: false }}>
       <Stack.Screen name={getScreenName(screens.index)} />
       <Stack.Screen name={getScreenName(screens.StartScreen)} />
       <Stack.Screen name={getScreenName(screens.LogIn)} />
@@ -38,7 +42,7 @@ export default function Layout() {
       <Stack.Screen name={getScreenName(screens.NewPassword)} />
       <Stack.Screen
         name={getScreenName(screens.Main)}
-        options={{ headerShown: true, headerShadowVisible: false }}
+        options={{ headerShown: true }}
       />
       <Stack.Screen
         name={getScreenName(screens.Crypto)}
@@ -52,7 +56,21 @@ export default function Layout() {
           presentation: "modal",
         }}
       />
-      <Stack.Screen name={getScreenName(screens.Profile)} />
+      <Stack.Screen
+        name={getScreenName(screens.Profile)}
+        options={{
+          headerShown: true,
+          headerTitle: "",
+          headerStyle: {
+            backgroundColor: colors.primaryBlack,
+          },
+          headerLeft: () => (
+            <TouchableOpacity onPress={navigation.goBack}>
+              <Ionicons name="chevron-back" size={24} color={colors.white} />
+            </TouchableOpacity>
+          ),
+        }}
+      />
     </Stack>
   );
 }

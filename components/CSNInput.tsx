@@ -13,12 +13,14 @@ import { colors } from "../config/colors";
 import { hexToRgba } from "../helpers";
 
 type CSNInputPropsType = {
-  label: string;
   placeholder: string;
+  label?: string;
   leftIcon?: typeof MailIcon;
   isRequired?: boolean;
   isPassword?: boolean;
+  onlyInput?: boolean;
   type?: "password";
+  isDisabled?: boolean;
 };
 
 const CSNInput: FC<CSNInputPropsType> = ({
@@ -27,19 +29,24 @@ const CSNInput: FC<CSNInputPropsType> = ({
   isPassword,
   leftIcon,
   isRequired,
+  onlyInput,
+  isDisabled,
 }) => (
   <FormControl isRequired={isRequired}>
-    <FormControlLabel mb="$1">
-      <FormControlLabelText color={colors.white} fontSize={14}>
-        {label}
-      </FormControlLabelText>
-    </FormControlLabel>
+    {!onlyInput && (
+      <FormControlLabel mb="$1">
+        <FormControlLabelText color={colors.white} fontSize={14}>
+          {label}
+        </FormControlLabelText>
+      </FormControlLabel>
+    )}
     <Input
       variant="outline"
       size="md"
       isRequired={isRequired}
       backgroundColor={colors.grey}
       borderColor={colors.grey}
+      isDisabled={isDisabled}
     >
       {leftIcon && (
         <InputSlot>
