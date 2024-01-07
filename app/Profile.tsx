@@ -10,7 +10,7 @@ const Profile = () => {
       membershipPlans.map((membershipPlan) => (
         <MembershipPlan
           key={membershipPlan._id}
-          isSelected={membershipPlan._id === 'basic'}
+          isSelected={membershipPlan._id === "basic"}
           membershipPlan={membershipPlan}
         />
       )),
@@ -75,6 +75,17 @@ const Profile = () => {
         </Text>
 
         <VStack space="lg">{membershipPlansMemo}</VStack>
+
+        <View mt={32} mb={24}>
+          <Text
+            textAlign="center"
+            fontSize={14}
+            lineHeight={17}
+            color={colors.white}
+          >
+            Next Payment due on 22/08/2022
+          </Text>
+        </View>
       </View>
     </ScrollView>
   );
