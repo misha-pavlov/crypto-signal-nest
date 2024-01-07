@@ -1,11 +1,26 @@
 import { View, Text, ScrollView, Center, VStack } from "@gluestack-ui/themed";
+import { useMemo } from "react";
 import { colors } from "../config/colors";
-import { ProfileInput, UserAvatar } from "../components";
+import { MembershipPlan, ProfileInput, UserAvatar } from "../components";
+import { membershipPlans } from "../config/constants";
 
 const Profile = () => {
+  const membershipPlansMemo = useMemo(
+    () =>
+      membershipPlans.map((membershipPlan) => (
+        <MembershipPlan
+          key={membershipPlan._id}
+          isSelected={membershipPlan._id === 'basic'}
+          membershipPlan={membershipPlan}
+        />
+      )),
+    []
+  );
+
   return (
     <ScrollView backgroundColor={colors.primaryBlack}>
       <View px={16}>
+        {/* HEADER */}
         <Center>
           <UserAvatar bigSize showEditIcon />
           <Text
@@ -19,6 +34,7 @@ const Profile = () => {
           </Text>
         </Center>
 
+        {/* FORM */}
         <Text
           mt={32}
           mb={16}
@@ -45,6 +61,20 @@ const Profile = () => {
             }
           />
         </VStack>
+
+        {/* PLANS */}
+        <Text
+          mt={32}
+          mb={16}
+          fontFamily="$bold"
+          color={colors.white}
+          fontSize={14}
+          lineHeight={17}
+        >
+          Membership
+        </Text>
+
+        <VStack space="lg">{membershipPlansMemo}</VStack>
       </View>
     </ScrollView>
   );
