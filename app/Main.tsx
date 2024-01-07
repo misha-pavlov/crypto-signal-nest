@@ -70,10 +70,6 @@ const Main = () => {
 
   useEffect(() => {
     navigation.setOptions({
-      headerTitle: "",
-      headerStyle: {
-        backgroundColor: colors.primaryBlack,
-      },
       headerLeft: withStyledProvider(() =>
         isEdit ? (
           <Text color={colors.red}>Delete({selectedList.length})</Text>

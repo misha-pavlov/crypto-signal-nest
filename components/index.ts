@@ -6,3 +6,5 @@ export { default as CryptoSignalNestLoader } from "./CryptoSignalNestLoader";
 export { default as UserAvatar } from "./UserAvatar";
 export { default as CryptoListItem } from "./CryptoListItem";
 export { default as ScaleButton } from "./ScaleButton";
+export { default as ProfileInput } from "./ProfileInput";
+export { default as MembershipPlan } from "./MembershipPlan";
