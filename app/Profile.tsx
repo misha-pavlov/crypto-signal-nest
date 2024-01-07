@@ -35,8 +35,13 @@ const Profile = () => {
           <ProfileInput label="Email" />
           <ProfileInput
             label="Password"
+            isPassword
             showIfSelected={
-              <ProfileInput label="Repeate password" selectedByDefault />
+              <ProfileInput
+                label="Repeate password"
+                selectedByDefault
+                isPassword
+              />
             }
           />
         </VStack>

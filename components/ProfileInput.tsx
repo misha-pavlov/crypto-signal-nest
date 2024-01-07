@@ -15,6 +15,7 @@ type ProfileInputPropsType = {
   value?: string;
   showIfSelected?: JSX.Element;
   selectedByDefault?: boolean;
+  isPassword?: boolean;
 };
 
 const ProfileInput: FC<ProfileInputPropsType> = ({
@@ -22,6 +23,7 @@ const ProfileInput: FC<ProfileInputPropsType> = ({
   value,
   showIfSelected,
   selectedByDefault,
+  isPassword,
 }) => {
   const [isDisabled, setIsDisabled] = useState(!selectedByDefault);
 
@@ -48,7 +50,12 @@ const ProfileInput: FC<ProfileInputPropsType> = ({
             </Text>
           )}
         </HStack>
-        <CSNInput placeholder={label} onlyInput isDisabled={isDisabled} />
+        <CSNInput
+          placeholder={label}
+          onlyInput
+          isPassword={isPassword}
+          isDisabled={isDisabled}
+        />
       </FormControl>
 
       {!isDisabled && showIfSelected}

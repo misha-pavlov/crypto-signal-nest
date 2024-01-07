@@ -42,7 +42,13 @@ export default function Layout() {
       <Stack.Screen name={getScreenName(screens.NewPassword)} />
       <Stack.Screen
         name={getScreenName(screens.Main)}
-        options={{ headerShown: true }}
+        options={{
+          headerShown: true,
+          headerTitle: "",
+          headerStyle: {
+            backgroundColor: colors.primaryBlack,
+          },
+        }}
       />
       <Stack.Screen
         name={getScreenName(screens.Crypto)}

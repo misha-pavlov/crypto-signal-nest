@@ -1,5 +1,5 @@
-import { Avatar, AvatarBadge, AvatarImage } from "@gluestack-ui/themed";
-import { FontAwesome5, FontAwesome } from "@expo/vector-icons";
+import { Avatar, AvatarImage, View } from "@gluestack-ui/themed";
+import { FontAwesome5, Feather } from "@expo/vector-icons";
 import { FC } from "react";
 import { TouchableOpacity } from "react-native";
 import { colors } from "../config/colors";
@@ -27,28 +27,31 @@ const UserAvatar: FC<UserAvatarPropsType> = ({
           alt="user image"
         />
       ) : (
-        <FontAwesome5
-          name="user-alt"
-          size={bigSize ? 45 : 16}
-          color={colors.primaryBlack}
-        />
+        <View w={64} h={64} justifyContent="center" alignItems="center">
+          <FontAwesome5
+            name="user-alt"
+            size={bigSize ? 40 : 16}
+            color={colors.primaryBlack}
+          />
+        </View>
       )}
 
       {showEditIcon && (
-        <AvatarBadge
-          borderColor={colors.primaryBlack}
+        <View
+          position="absolute"
           alignItems="center"
           justifyContent="center"
           backgroundColor={colors.grey}
-          w={25}
-          h={25}
-          top={43}
-          left={45}
+          borderRadius={50}
+          w={28}
+          h={28}
+          top={40}
+          left={40}
         >
           <TouchableOpacity>
-            <FontAwesome name="edit" size={12} color={colors.white} />
+            <Feather name="edit" size={16} color={colors.white} />
           </TouchableOpacity>
-        </AvatarBadge>
+        </View>
       )}
     </Avatar>
   );
