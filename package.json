@@ -15,6 +15,7 @@
     "@gluestack-ui/config": "^1.0.10",
     "@gluestack-ui/themed": "^1.0.30",
     "@react-native-async-storage/async-storage": "1.18.2",
+    "@react-native-community/netinfo": "9.3.10",
     "@shopify/react-native-skia": "0.1.185",
     "@tensorflow/tfjs": "^4.15.0",
     "@tensorflow/tfjs-react-native": "^1.0.0",
