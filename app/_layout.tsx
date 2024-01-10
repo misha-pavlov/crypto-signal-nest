@@ -3,8 +3,10 @@ import { vexo } from "vexo-analytics";
 import * as tf from "@tensorflow/tfjs";
 import "@tensorflow/tfjs-react-native";
 import { useEffect } from "react";
-import { TouchableOpacity } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Platform, TouchableOpacity } from "react-native";
+import { Ionicons, AntDesign } from "@expo/vector-icons";
+import NetInfo from "@react-native-community/netinfo";
+import FlashMessage, { hideMessage, showMessage } from "react-native-flash-message";
 import { screens } from "../config/screens";
 import { colors } from "../config/colors";
 
@@ -31,52 +33,76 @@ export default function Layout() {
     () => abortController.abort();
   }, []);
 
+  NetInfo.fetch().then((state) => {
+    if (!state.isConnected) {
+      showMessage({
+        message: "No internet connection",
+        backgroundColor: colors.red,
+        color: colors.white,
+        hideOnPress: false,
+        autoHide: false,
+        icon: () => <AntDesign name="warning" size={20} color={colors.white} />,
+        style: {
+          alignItems: "center",
+          gap: 14,
+          paddingTop: Platform.OS === "android" ? 50 : 0,
+        },
+        titleStyle: { fontFamily: "Exo2-Bold" },
+      });
+    } else {
+      hideMessage();
+    }
+  });
+
   return (
-    <Stack screenOptions={{ headerShown: false, headerShadowVisible: false }}>
-      <Stack.Screen name={getScreenName(screens.index)} />
-      <Stack.Screen name={getScreenName(screens.StartScreen)} />
-      <Stack.Screen name={getScreenName(screens.LogIn)} />
-      <Stack.Screen name={getScreenName(screens.SignUp)} />
-      <Stack.Screen name={getScreenName(screens.CheckEmail)} />
-      <Stack.Screen name={getScreenName(screens.EmailForNewPassword)} />
-      <Stack.Screen name={getScreenName(screens.NewPassword)} />
-      <Stack.Screen
-        name={getScreenName(screens.Main)}
-        options={{
-          headerShown: true,
-          headerTitle: "",
-          headerStyle: {
-            backgroundColor: colors.primaryBlack,
-          },
-        }}
-      />
-      <Stack.Screen
-        name={getScreenName(screens.Crypto)}
-        options={{
-          presentation: "modal",
-        }}
-      />
-      <Stack.Screen
-        name={getScreenName(screens.AddNewCrypto)}
-        options={{
-          presentation: "modal",
-        }}
-      />
-      <Stack.Screen
-        name={getScreenName(screens.Profile)}
-        options={{
-          headerShown: true,
-          headerTitle: "",
-          headerStyle: {
-            backgroundColor: colors.primaryBlack,
-          },
-          headerLeft: () => (
-            <TouchableOpacity onPress={navigation.goBack}>
-              <Ionicons name="chevron-back" size={24} color={colors.white} />
-            </TouchableOpacity>
-          ),
-        }}
-      />
-    </Stack>
+    <>
+      <FlashMessage position="top" />
+      <Stack screenOptions={{ headerShown: false, headerShadowVisible: false }}>
+        <Stack.Screen name={getScreenName(screens.index)} />
+        <Stack.Screen name={getScreenName(screens.StartScreen)} />
+        <Stack.Screen name={getScreenName(screens.LogIn)} />
+        <Stack.Screen name={getScreenName(screens.SignUp)} />
+        <Stack.Screen name={getScreenName(screens.CheckEmail)} />
+        <Stack.Screen name={getScreenName(screens.EmailForNewPassword)} />
+        <Stack.Screen name={getScreenName(screens.NewPassword)} />
+        <Stack.Screen
+          name={getScreenName(screens.Main)}
+          options={{
+            headerShown: true,
+            headerTitle: "",
+            headerStyle: {
+              backgroundColor: colors.primaryBlack,
+            },
+          }}
+        />
+        <Stack.Screen
+          name={getScreenName(screens.Crypto)}
+          options={{
+            presentation: "modal",
+          }}
+        />
+        <Stack.Screen
+          name={getScreenName(screens.AddNewCrypto)}
+          options={{
+            presentation: "modal",
+          }}
+        />
+        <Stack.Screen
+          name={getScreenName(screens.Profile)}
+          options={{
+            headerShown: true,
+            headerTitle: "",
+            headerStyle: {
+              backgroundColor: colors.primaryBlack,
+            },
+            headerLeft: () => (
+              <TouchableOpacity onPress={navigation.goBack}>
+                <Ionicons name="chevron-back" size={24} color={colors.white} />
+              </TouchableOpacity>
+            ),
+          }}
+        />
+      </Stack>
+    </>
   );
 }
