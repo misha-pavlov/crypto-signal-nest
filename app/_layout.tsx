@@ -6,7 +6,10 @@ import { useEffect } from "react";
 import { Platform, TouchableOpacity } from "react-native";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 import NetInfo from "@react-native-community/netinfo";
-import FlashMessage, { hideMessage, showMessage } from "react-native-flash-message";
+import FlashMessage, {
+  hideMessage,
+  showMessage,
+} from "react-native-flash-message";
 import { screens } from "../config/screens";
 import { colors } from "../config/colors";
 
@@ -33,7 +36,7 @@ export default function Layout() {
     () => abortController.abort();
   }, []);
 
-  NetInfo.fetch().then((state) => {
+  NetInfo.addEventListener((state) => {
     if (!state.isConnected) {
       showMessage({
         message: "No internet connection",
