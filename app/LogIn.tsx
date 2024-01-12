@@ -5,10 +5,11 @@ import {
   VStack,
   MailIcon,
   LockIcon,
+  ButtonSpinner,
 } from "@gluestack-ui/themed";
 import { Link, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import * as LocalAuthentication from "expo-local-authentication";
 import { mmkvStorage } from "../config/mmkvStorage";
 import { authSafeArea, mmkvStorageKeys } from "../config/constants";
@@ -16,12 +17,17 @@ import { withStyledProvider } from "../hocs/withStyledProvider";
 import { screens } from "../config/screens";
 import { colors } from "../config/colors";
 import { AuthHeader, CSNInput, AuthBottom } from "../components";
-
-// TODO: add mmkvStorage.delete(mmkvStorageKeys.wasStartScreenShown) on login
+import { useAppDispatch } from "../store/store";
+import { signIn } from "../utils/actions/authActions";
 
 const Login = () => {
-  const [isBiometricSupported, setIsBiometricSupported] = useState(false);
   const router = useRouter();
+  const dispatch = useAppDispatch();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string>();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isBiometricSupported, setIsBiometricSupported] = useState(false);
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -47,6 +53,29 @@ const Login = () => {
     return () => abortController.abort();
   });
 
+  const authHandler = useCallback(async () => {
+    try {
+      if (isBiometricSupported) {
+        console.log("do not forget about me");
+        // router.replace({
+        //   pathname: screens.FaceId,
+        //   params: {
+        //     userId: "qwe",
+        //   },
+        // })
+      }
+
+      setIsLoading(true);
+      setError(undefined);
+      await dispatch(signIn({ email, password }));
+      mmkvStorage.delete(mmkvStorageKeys.wasStartScreenShown);
+    } catch (error) {
+      setError((error as { message: string }).message);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [email, password]);
+
   return (
     <SafeAreaView style={authSafeArea}>
       <VStack justifyContent="space-between" flex={1} px={16}>
@@ -62,6 +91,7 @@ const Login = () => {
               placeholder="Enter unique email"
               isRequired
               leftIcon={MailIcon}
+              onChangeValue={(value) => setEmail(value)}
             />
 
             <CSNInput
@@ -70,6 +100,7 @@ const Login = () => {
               isRequired
               isPassword
               leftIcon={LockIcon}
+              onChangeValue={(value) => setPassword(value)}
             />
           </VStack>
 
@@ -90,18 +121,20 @@ const Login = () => {
             <Button
               borderRadius={10}
               h={40}
-              onPress={() =>
-                isBiometricSupported
-                  ? router.replace({
-                      pathname: screens.FaceId,
-                      params: {
-                        userId: "qwe",
-                      },
-                    })
-                  : console.log("asd")
+              isDisabled={
+                !email.length ||
+                !password.length ||
+                !/\S+@\S+\.\S+/.test(email) ||
+                password.length < 6 ||
+                isLoading
               }
+              onPress={authHandler}
             >
-              <Text color={colors.primaryBlack}>Log in</Text>
+              {isLoading ? (
+                <ButtonSpinner mr="$1" />
+              ) : (
+                <Text color={colors.primaryBlack}>Log in</Text>
+              )}
             </Button>
 
             <Button borderRadius={10} h={40}>

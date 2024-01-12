@@ -1,4 +1,6 @@
 import { createStyle } from '@gluestack-style/react';
+import { hexToRgba } from '../../helpers';
+import { colors } from '../colors';
 
 export const TextareaInput = createStyle({
   p: '$2',
@@ -8,7 +10,7 @@ export const TextareaInput = createStyle({
   props: {
     // @ts-ignore
     multiline: true,
-    placeholderTextColor: '$textLight500',
+    placeholderTextColor: hexToRgba(colors.white, 0.5),
   },
   _dark: {
     color: '$textDark50',

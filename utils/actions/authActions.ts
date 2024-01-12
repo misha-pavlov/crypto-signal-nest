@@ -1,12 +1,18 @@
-import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import { child, getDatabase, ref, set } from "firebase/database";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { showMessage } from "react-native-flash-message";
 import { getFirebaseApp } from "../../helpers/firebaseHelpers";
 import { AppDispatch } from "../../store/store";
 import { authenticate, logout } from "../../store/authSlice";
 import { mmkvStorage } from "../../config/mmkvStorage";
 import { mmkvStorageKeys } from "../../config/constants";
 import { UserType } from "../../types/User.type";
+import { getUserData } from "./userActions";
 
 let timer: NodeJS.Timeout;
 
@@ -53,6 +59,11 @@ export const signUp = (params: {
         message = "This email is already in use";
       }
 
+      showMessage({
+        message,
+        type: "danger",
+      });
+
       throw new Error(message);
     }
   };
@@ -71,7 +82,7 @@ const createUser = async (params: CreateUserParamsType) => {
     email,
     _id: userId,
     cryptoList: [],
-    plan: 'basic',
+    plan: "basic",
     signUpDate: new Date().toISOString(),
   };
 
@@ -108,5 +119,46 @@ export const userLogout = () => {
     mmkvStorage.clearAll();
     clearTimeout(timer);
     dispatch(logout());
+  };
+};
+
+export const signIn = (params: { email: string; password: string }) => {
+  return async (dispatch: AppDispatch) => {
+    const { email, password } = params;
+    const app = getFirebaseApp();
+    const auth = getAuth(app);
+
+    try {
+      const result = await signInWithEmailAndPassword(auth, email, password);
+      // @ts-ignore according type stsTokenManager doesn't exist, but acually it does
+      const { uid, stsTokenManager } = result.user;
+      const { accessToken, expirationTime } = stsTokenManager;
+
+      const expiryDate = new Date(expirationTime);
+      const userData = await getUserData(uid);
+      const timeNow = new Date();
+      const millisecondsUntilExpiry = Number(expiryDate) - Number(timeNow);
+
+      dispatch(authenticate({ token: accessToken, userData }));
+      saveDataToStorage(accessToken, uid, expiryDate);
+
+      timer = setTimeout(() => {
+        dispatch(userLogout());
+      }, millisecondsUntilExpiry);
+    } catch (error) {
+      const errorCode = (error as { code: string }).code;
+      let message = "Something went wrong";
+
+      if (errorCode === "auth/invalid-login-credentials") {
+        message = "The username or password was incorrect";
+      }
+
+      showMessage({
+        message,
+        type: "danger",
+      });
+
+      throw new Error(message);
+    }
   };
 };

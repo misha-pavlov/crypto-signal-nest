@@ -65,6 +65,7 @@ const CSNInput: FC<CSNInputPropsType> = ({
         placeholder={placeholder}
         color={colors.white}
         type={isPassword ? "password" : undefined}
+        autoCapitalize="none"
         onChangeText={(text) => onChangeValue(text)}
       />
     </Input>
