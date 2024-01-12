@@ -12,6 +12,7 @@ export type UserType = {
   email: string;
   cryptoList: string[];
   plan: 'basic' | 'silver' | 'gold' | 'platinum';
+  signUpDate: string;
   password?: string;
   withGoogle?: boolean;
   withFacebook?: boolean;

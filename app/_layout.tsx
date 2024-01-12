@@ -10,8 +10,10 @@ import FlashMessage, {
   hideMessage,
   showMessage,
 } from "react-native-flash-message";
+import { Provider } from "react-redux";
 import { screens } from "../config/screens";
 import { colors } from "../config/colors";
+import { store } from "../store/store";
 
 const vexpoApiKey = process.env.EXPO_PUBLIC_VEXO_API_KEY;
 
@@ -58,7 +60,7 @@ export default function Layout() {
   });
 
   return (
-    <>
+    <Provider store={store}>
       <FlashMessage position="top" />
       <Stack screenOptions={{ headerShown: false, headerShadowVisible: false }}>
         <Stack.Screen name={getScreenName(screens.index)} />
@@ -106,6 +108,6 @@ export default function Layout() {
           }}
         />
       </Stack>
-    </>
+    </Provider>
   );
 }

@@ -1,7 +1,5 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-import { getPerformance } from "firebase/performance";
 
 export const getFirebaseApp = () => {
   // TODO: Add SDKs for Firebase products that you want to use
@@ -19,13 +17,6 @@ export const getFirebaseApp = () => {
     appId: "1:933780612305:web:ceb33837e7cbda14e151f0",
     measurementId: "G-G9DV3WNG6M",
   };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  // Initialize Analytics Monitoring
-  getAnalytics(app);
-  // Initialize Performance Monitoring and get a reference to the service
-  getPerformance(app);
-
-  return app;
+  
+  return initializeApp(firebaseConfig);
 };
