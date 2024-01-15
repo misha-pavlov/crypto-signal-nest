@@ -18,7 +18,7 @@ import { screens } from "../config/screens";
 import { colors } from "../config/colors";
 import { AuthHeader, CSNInput, AuthBottom } from "../components";
 import { useAppDispatch } from "../store/store";
-import { signIn } from "../utils/actions/authActions";
+import { faceIdSignIn, signIn } from "../utils/actions/authActions";
 
 const Login = () => {
   const router = useRouter();
@@ -43,7 +43,8 @@ const Login = () => {
         });
 
         if (biometricAuth.success) {
-          console.log("123");
+          await dispatch(faceIdSignIn(savedUserId));
+          router.replace({ pathname: screens.Main });
         }
       } else {
         const compatible = await LocalAuthentication.hasHardwareAsync();
@@ -55,20 +56,18 @@ const Login = () => {
 
   const authHandler = useCallback(async () => {
     try {
-      if (isBiometricSupported) {
-        console.log("do not forget about me");
-        // router.replace({
-        //   pathname: screens.FaceId,
-        //   params: {
-        //     userId: "qwe",
-        //   },
-        // })
-      }
-
       setIsLoading(true);
       setError(undefined);
-      await dispatch(signIn({ email, password }));
-      mmkvStorage.delete(mmkvStorageKeys.wasStartScreenShown);
+      const userId = await dispatch(signIn({ email, password }));
+
+      if (isBiometricSupported) {
+        router.replace({
+          pathname: screens.FaceId,
+          params: {
+            userId,
+          },
+        });
+      }
     } catch (error) {
       setError((error as { message: string }).message);
     } finally {

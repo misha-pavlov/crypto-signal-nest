@@ -145,6 +145,55 @@ export const signIn = (params: { email: string; password: string }) => {
       timer = setTimeout(() => {
         dispatch(userLogout());
       }, millisecondsUntilExpiry);
+
+      return uid;
+    } catch (error) {
+      const errorCode = (error as { code: string }).code;
+      let message = "Something went wrong";
+
+      if (errorCode === "auth/invalid-login-credentials") {
+        message = "The username or password was incorrect";
+      }
+
+      showMessage({
+        message,
+        type: "danger",
+      });
+
+      throw new Error(message);
+    }
+  };
+};
+
+export const faceIdSignIn = (userId: string) => {
+  return async (dispatch: AppDispatch) => {
+    const app = getFirebaseApp();
+    const auth = getAuth(app);
+    const user = await getUserData(userId);
+
+    try {
+      if (user && user?.password) {
+        const result = await signInWithEmailAndPassword(
+          auth,
+          user?.email,
+          user?.password
+        );
+        // @ts-ignore according type stsTokenManager doesn't exist, but acually it does
+        const { uid, stsTokenManager } = result.user;
+        const { accessToken, expirationTime } = stsTokenManager;
+
+        const expiryDate = new Date(expirationTime);
+        const userData = await getUserData(uid);
+        const timeNow = new Date();
+        const millisecondsUntilExpiry = Number(expiryDate) - Number(timeNow);
+
+        dispatch(authenticate({ token: accessToken, userData }));
+        saveDataToStorage(accessToken, uid, expiryDate);
+
+        timer = setTimeout(() => {
+          dispatch(userLogout());
+        }, millisecondsUntilExpiry);
+      }
     } catch (error) {
       const errorCode = (error as { code: string }).code;
       let message = "Something went wrong";

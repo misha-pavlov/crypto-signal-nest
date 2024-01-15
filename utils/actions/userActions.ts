@@ -1,3 +1,4 @@
+import { UserType } from './../../types/User.type';
 import { child, getDatabase, ref, get } from "firebase/database";
 import { getFirebaseApp } from "../../helpers/firebaseHelpers";
 
@@ -7,7 +8,7 @@ export const getUserData = async (userId: string) => {
     const dbRef = ref(getDatabase(app));
     const userRef = child(dbRef, `users/${userId}`);
     const snapshot = await get(userRef);
-    return snapshot.val();
+    return snapshot.val() as UserType;
   } catch (error) {
     console.error(error);
   }

@@ -33,7 +33,6 @@ const SignUp = () => {
       setIsLoading(true);
       setError(undefined);
       await dispatch(signUp({ name, email, password }));
-      mmkvStorage.delete(mmkvStorageKeys.wasStartScreenShown);
     } catch (error) {
       setError((error as { message: string }).message);
     } finally {

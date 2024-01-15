@@ -27,6 +27,7 @@ const FaceId = () => {
 
     if (biometricAuth.success && userId) {
       mmkvStorage.set(mmkvStorageKeys.savedUserId, userId);
+      router.replace({ pathname: screens.Main })
     } else {
       showMessage({
         message: "Biometric error",
