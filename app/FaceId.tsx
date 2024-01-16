@@ -32,6 +32,7 @@ const FaceId = () => {
       showMessage({
         message: "Biometric error",
         type: "danger",
+        titleStyle: { fontFamily: "Exo2-Bold" },
       });
     }
   }, []);

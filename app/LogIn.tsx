@@ -25,7 +25,6 @@ const Login = () => {
   const dispatch = useAppDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string>();
   const [isLoading, setIsLoading] = useState(false);
   const [isBiometricSupported, setIsBiometricSupported] = useState(false);
 
@@ -57,7 +56,6 @@ const Login = () => {
   const authHandler = useCallback(async () => {
     try {
       setIsLoading(true);
-      setError(undefined);
       const userId = await dispatch(signIn({ email, password }));
 
       if (isBiometricSupported) {
@@ -69,7 +67,7 @@ const Login = () => {
         });
       }
     } catch (error) {
-      setError((error as { message: string }).message);
+      console.error(error);
     } finally {
       setIsLoading(false);
     }

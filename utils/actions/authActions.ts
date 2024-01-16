@@ -62,6 +62,7 @@ export const signUp = (params: {
       showMessage({
         message,
         type: "danger",
+        titleStyle: { fontFamily: "Exo2-Bold" },
       });
 
       throw new Error(message);
@@ -158,6 +159,7 @@ export const signIn = (params: { email: string; password: string }) => {
       showMessage({
         message,
         type: "danger",
+        titleStyle: { fontFamily: "Exo2-Bold" },
       });
 
       throw new Error(message);
@@ -205,6 +207,7 @@ export const faceIdSignIn = (userId: string) => {
       showMessage({
         message,
         type: "danger",
+        titleStyle: { fontFamily: "Exo2-Bold" },
       });
 
       throw new Error(message);

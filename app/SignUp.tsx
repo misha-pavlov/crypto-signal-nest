@@ -9,42 +9,38 @@ import {
   ButtonSpinner,
 } from "@gluestack-ui/themed";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useState, useEffect, useCallback } from "react";
-import { Alert } from "react-native";
+import { useState, useCallback } from "react";
+import { useRouter } from "expo-router";
 import { colors } from "../config/colors";
 import { AuthHeader, CSNInput, AuthBottom } from "../components";
 import { screens } from "../config/screens";
-import { authSafeArea, mmkvStorageKeys } from "../config/constants";
+import { authSafeArea } from "../config/constants";
 import { useAppDispatch } from "../store/store";
-import { mmkvStorage } from "../config/mmkvStorage";
 import { signUp } from "../utils/actions/authActions";
 import { withStyledProvider } from "../hocs/withStyledProvider";
 
 const SignUp = () => {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string>();
   const [isLoading, setIsLoading] = useState(false);
 
   const authHandler = useCallback(async () => {
     try {
       setIsLoading(true);
-      setError(undefined);
       await dispatch(signUp({ name, email, password }));
+      router.replace({
+        pathname: screens.CheckEmail,
+        params: { email, isFromSignUp: true },
+      });
     } catch (error) {
-      setError((error as { message: string }).message);
+      console.error(error);
     } finally {
       setIsLoading(false);
     }
   }, [name, email, password]);
-
-  useEffect(() => {
-    if (error) {
-      Alert.alert("Error", error);
-    }
-  }, [error]);
 
   return (
     <SafeAreaView style={authSafeArea}>
