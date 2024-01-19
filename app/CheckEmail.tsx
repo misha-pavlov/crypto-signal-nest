@@ -16,6 +16,7 @@ const getFourDigitRandomNumber = () => Math.floor(1000 + Math.random() * 9000);
 
 const CheckEmail = () => {
   const dispatch = useAppDispatch();
+  const [isResendDisabled, setIsResendDisabled] = useState(true);
   const [otp, setOtp] = useState("");
   const [fourDigitRandomNumber, setFourDigitRandomNumber] = useState(
     getFourDigitRandomNumber()
@@ -87,6 +88,7 @@ const CheckEmail = () => {
   const onResendEmail = useCallback(async () => {
     const newFourDigitRandomNumber = getFourDigitRandomNumber();
     setFourDigitRandomNumber(newFourDigitRandomNumber);
+    setIsResendDisabled(true);
     await sendEmail({ code: newFourDigitRandomNumber });
   }, []);
 
@@ -163,7 +165,10 @@ const CheckEmail = () => {
           firstText="Didn't receive the email?"
           secondText="Click to resend"
           href=""
+          withTimer
+          disabled={isResendDisabled}
           onPress={onResendEmail}
+          onCountdown={() => setIsResendDisabled(false)}
         />
         <AuthBackButton
           href={authBackButtonData.href}
