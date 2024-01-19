@@ -56,7 +56,17 @@ const Login = () => {
   const authHandler = useCallback(async () => {
     try {
       setIsLoading(true);
-      const userId = await dispatch(signIn({ email, password }));
+      const { userId, verified } = await dispatch(signIn({ email, password }));
+
+      if (!verified) {
+        setIsLoading(false);
+        router.replace({
+          pathname: screens.CheckEmail,
+          params: { email, isFromLogIn: true, userId },
+        });
+
+        return null;
+      }
 
       if (isBiometricSupported) {
         router.replace({

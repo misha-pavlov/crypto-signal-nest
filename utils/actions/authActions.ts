@@ -51,6 +51,8 @@ export const signUp = (params: {
       timer = setTimeout(() => {
         dispatch(userLogout());
       }, millisecondsUntilExpiry);
+
+      return uid;
     } catch (error) {
       const errorCode = (error as { code: string }).code;
       let message = "Something went wrong";
@@ -84,6 +86,7 @@ const createUser = async (params: CreateUserParamsType) => {
     _id: userId,
     cryptoList: [],
     plan: "basic",
+    verified: false,
     signUpDate: new Date().toISOString(),
   };
 
@@ -137,6 +140,17 @@ export const signIn = (params: { email: string; password: string }) => {
 
       const expiryDate = new Date(expirationTime);
       const userData = await getUserData(uid);
+
+      if (!userData?.verified) {
+        showMessage({
+          message: "User is not verified",
+          type: "danger",
+          titleStyle: { fontFamily: "Exo2-Bold" },
+        });
+
+        return { userId: uid, verified: false };
+      }
+
       const timeNow = new Date();
       const millisecondsUntilExpiry = Number(expiryDate) - Number(timeNow);
 
@@ -147,7 +161,7 @@ export const signIn = (params: { email: string; password: string }) => {
         dispatch(userLogout());
       }, millisecondsUntilExpiry);
 
-      return uid;
+      return { userId: uid, verified: true };
     } catch (error) {
       const errorCode = (error as { code: string }).code;
       let message = "Something went wrong";

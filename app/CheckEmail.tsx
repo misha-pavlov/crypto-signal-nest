@@ -2,16 +2,20 @@ import { VStack, Button, Text } from "@gluestack-ui/themed";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { OtpInput } from "react-native-otp-entry";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useMemo } from "react";
 import { showMessage } from "react-native-flash-message";
 import { authSafeArea } from "../config/constants";
 import { AuthHeader, AuthBackButton, AuthBottom } from "../components";
 import { screens } from "../config/screens";
 import { colors } from "../config/colors";
+import { useAppDispatch } from "../store/store";
+import { updateUserDataRedux } from "../store/authSlice";
+import { updateUserData } from "../utils/actions/userActions";
 
 const getFourDigitRandomNumber = () => Math.floor(1000 + Math.random() * 9000);
 
 const CheckEmail = () => {
+  const dispatch = useAppDispatch();
   const [otp, setOtp] = useState("");
   const [fourDigitRandomNumber, setFourDigitRandomNumber] = useState(
     getFourDigitRandomNumber()
@@ -19,9 +23,12 @@ const CheckEmail = () => {
   const router = useRouter();
   const params = useLocalSearchParams<{
     email: string;
+    userId: string;
     isFromSignUp: string;
+    isFromLogIn: string;
   }>();
   const isFromSignUp = Boolean(params?.isFromSignUp);
+  const isFromLogIn = Boolean(params?.isFromLogIn);
 
   const sendEmail = useCallback(
     ({ signal, code }: { signal?: AbortSignal; code: number }) =>
@@ -49,8 +56,15 @@ const CheckEmail = () => {
     [fourDigitRandomNumber]
   );
 
-  const onVerify = useCallback(() => {
-    if (Number(otp) === fourDigitRandomNumber) {
+  const onVerify = useCallback(async () => {
+    const userId = params?.userId;
+
+    if (Number(otp) === fourDigitRandomNumber && userId) {
+      const newData = { verified: true };
+
+      await updateUserData(userId, newData);
+      dispatch(updateUserDataRedux({ newData }));
+
       showMessage({
         message: "You did it",
         type: "success",
@@ -58,7 +72,8 @@ const CheckEmail = () => {
       });
 
       router.replace({
-        pathname: isFromSignUp ? screens.LogIn : screens.NewPassword,
+        pathname:
+          isFromSignUp || isFromLogIn ? screens.LogIn : screens.NewPassword,
       });
     } else {
       showMessage({
@@ -67,13 +82,28 @@ const CheckEmail = () => {
         titleStyle: { fontFamily: "Exo2-Bold" },
       });
     }
-  }, [otp, fourDigitRandomNumber]);
+  }, [otp, fourDigitRandomNumber, params]);
 
   const onResendEmail = useCallback(async () => {
     const newFourDigitRandomNumber = getFourDigitRandomNumber();
     setFourDigitRandomNumber(newFourDigitRandomNumber);
     await sendEmail({ code: newFourDigitRandomNumber });
   }, []);
+
+  const authBackButtonData = useMemo(() => {
+    if (isFromSignUp) {
+      return { href: screens.SignUp, backText: "Back to sign up" };
+    }
+
+    if (isFromLogIn) {
+      return { href: screens.LogIn, backText: "Back to log in" };
+    }
+
+    return {
+      href: screens.EmailForNewPassword,
+      backText: "Back to email for new password",
+    };
+  }, [isFromSignUp, isFromLogIn]);
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -136,10 +166,8 @@ const CheckEmail = () => {
           onPress={onResendEmail}
         />
         <AuthBackButton
-          href={isFromSignUp ? screens.SignUp : screens.EmailForNewPassword}
-          backText={
-            isFromSignUp ? "Back to sign up" : "Back to email for new password"
-          }
+          href={authBackButtonData.href}
+          backText={authBackButtonData.backText}
         />
       </VStack>
     </SafeAreaView>

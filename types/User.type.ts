@@ -11,9 +11,13 @@ export type UserType = {
   name: string;
   email: string;
   cryptoList: string[];
-  plan: 'basic' | 'silver' | 'gold' | 'platinum';
+  plan: "basic" | "silver" | "gold" | "platinum";
   signUpDate: string;
+  verified: boolean;
   password?: string;
   withGoogle?: boolean;
   withFacebook?: boolean;
-}
+};
+export type UpdateUserData = {
+  verified?: boolean;
+};

@@ -30,10 +30,10 @@ const SignUp = () => {
   const authHandler = useCallback(async () => {
     try {
       setIsLoading(true);
-      await dispatch(signUp({ name, email, password }));
+      const userId = await dispatch(signUp({ name, email, password }));
       router.replace({
         pathname: screens.CheckEmail,
-        params: { email, isFromSignUp: true },
+        params: { email, isFromSignUp: true, userId },
       });
     } catch (error) {
       console.error(error);
