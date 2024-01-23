@@ -12,22 +12,22 @@
       "resizeMode": "contain",
       "backgroundColor": "#1D1D1F"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.milov123.cryptosignalnest",
       "entitlements": {
         "com.apple.developer.networking.wifi-info": true
-      }
+      },
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#1D1D1F"
       },
-      "package": "com.milov123.cryptosignalnest"
+      "package": "com.milov123.cryptosignalnest",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -42,7 +42,8 @@
         {
           "faceIDPermission": "Allow $(PRODUCT_NAME) to use Face ID."
         }
-      ]
+      ],
+      ["@react-native-google-signin/google-signin"]
     ]
   }
 }

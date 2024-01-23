@@ -1,4 +1,4 @@
-package com.milov123.cryptosignalnest;
+package com.cryptosignalnest;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -9,7 +9,6 @@ import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
 import com.facebook.react.defaults.DefaultReactActivityDelegate;
 
 import expo.modules.ReactActivityDelegateWrapper;
-import com.rnfs.RNFSPackage;
 
 public class MainActivity extends ReactActivity {
   @Override
