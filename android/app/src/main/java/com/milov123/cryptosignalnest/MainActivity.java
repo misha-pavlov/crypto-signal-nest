@@ -1,4 +1,4 @@
-package com.cryptosignalnest;
+package com.milov123.cryptosignalnest;
 
 import android.os.Build;
 import android.os.Bundle;
