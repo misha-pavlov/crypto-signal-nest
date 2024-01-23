@@ -62,7 +62,7 @@ const Login = () => {
         setIsLoading(false);
         router.replace({
           pathname: screens.CheckEmail,
-          params: { email, isFromLogIn: true, userId },
+          params: { email, userId },
         });
 
         return null;

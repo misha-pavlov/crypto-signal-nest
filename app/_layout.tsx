@@ -69,7 +69,6 @@ export default function Layout() {
         <Stack.Screen name={getScreenName(screens.SignUp)} />
         <Stack.Screen name={getScreenName(screens.CheckEmail)} />
         <Stack.Screen name={getScreenName(screens.EmailForNewPassword)} />
-        <Stack.Screen name={getScreenName(screens.NewPassword)} />
         <Stack.Screen
           name={getScreenName(screens.Main)}
           options={{

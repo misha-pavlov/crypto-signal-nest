@@ -26,10 +26,8 @@ const CheckEmail = () => {
     email: string;
     userId: string;
     isFromSignUp: string;
-    isFromLogIn: string;
   }>();
   const isFromSignUp = Boolean(params?.isFromSignUp);
-  const isFromLogIn = Boolean(params?.isFromLogIn);
 
   const sendEmail = useCallback(
     ({ signal, code }: { signal?: AbortSignal; code: number }) =>
@@ -73,8 +71,7 @@ const CheckEmail = () => {
       });
 
       router.replace({
-        pathname:
-          isFromSignUp || isFromLogIn ? screens.LogIn : screens.NewPassword,
+        pathname: screens.LogIn,
       });
     } else {
       showMessage({
@@ -97,15 +94,8 @@ const CheckEmail = () => {
       return { href: screens.SignUp, backText: "Back to sign up" };
     }
 
-    if (isFromLogIn) {
-      return { href: screens.LogIn, backText: "Back to log in" };
-    }
-
-    return {
-      href: screens.EmailForNewPassword,
-      backText: "Back to email for new password",
-    };
-  }, [isFromSignUp, isFromLogIn]);
+    return { href: screens.LogIn, backText: "Back to log in" };
+  }, [isFromSignUp]);
 
   useEffect(() => {
     const abortController = new AbortController();
