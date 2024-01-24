@@ -19,7 +19,7 @@ import { authSafeArea } from "../config/constants";
 import { useAppDispatch } from "../store/store";
 import { signUp } from "../utils/actions/authActions";
 import { withStyledProvider } from "../hocs/withStyledProvider";
-import { googleSignIn } from "../utils/google";
+import { googleAuth as googleSignUp} from "../utils/google";
 
 const SignUp = () => {
   const router = useRouter();
@@ -46,7 +46,7 @@ const SignUp = () => {
 
   const googleAuth = useCallback(async () => {
     setIsLoading(true);
-    await googleSignIn(dispatch, router);
+    await googleSignUp(dispatch, router);
     setIsLoading(false);
   }, [dispatch, router]);
 

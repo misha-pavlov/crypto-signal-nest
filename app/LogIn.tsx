@@ -20,7 +20,7 @@ import { colors } from "../config/colors";
 import { AuthHeader, CSNInput, AuthBottom } from "../components";
 import { useAppDispatch } from "../store/store";
 import { faceIdSignIn, signIn } from "../utils/actions/authActions";
-import { googleSignIn } from "../utils/google";
+import { googleAuth as googleSignIn } from "../utils/google";
 
 const Login = () => {
   const router = useRouter();

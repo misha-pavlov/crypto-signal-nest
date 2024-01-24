@@ -9,7 +9,7 @@ import { screens } from "../../config/screens";
 import { AppDispatch } from "../../store/store";
 import { signIn, signUpForGoogle } from "../actions/authActions";
 
-export const googleSignIn = async (
+export const googleAuth = async (
   dispatch: AppDispatch,
   router: Router,
   isSignIn = false
