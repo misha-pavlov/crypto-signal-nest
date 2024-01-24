@@ -76,6 +76,8 @@ type CreateUserParamsType = {
   name: string;
   email: string;
   userId: string;
+  avatar?: string;
+  withGoogle?: boolean;
 };
 
 const createUser = async (params: CreateUserParamsType) => {
@@ -88,6 +90,8 @@ const createUser = async (params: CreateUserParamsType) => {
     plan: "basic",
     verified: false,
     signUpDate: new Date().toISOString(),
+    avatar: params?.avatar,
+    withGoogle: params?.withGoogle,
   };
 
   const dbRef = ref(getDatabase());
@@ -216,6 +220,65 @@ export const faceIdSignIn = (userId: string) => {
 
       if (errorCode === "auth/invalid-login-credentials") {
         message = "The username or password was incorrect";
+      }
+
+      showMessage({
+        message,
+        type: "danger",
+        titleStyle: { fontFamily: "Exo2-Bold" },
+      });
+
+      throw new Error(message);
+    }
+  };
+};
+
+export const signUpForGoogle = (params: {
+  name: string;
+  email: string;
+  password: string;
+  photo?: string;
+}) => {
+  return async (dispatch: AppDispatch) => {
+    const { email, name, password } = params;
+    const app = getFirebaseApp();
+    const auth = getAuth(app);
+
+    try {
+      const result = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      // @ts-ignore according type stsTokenManager doesn't exist, but acually it does
+      const { uid, stsTokenManager } = result.user;
+      const { accessToken, expirationTime } = stsTokenManager;
+
+      const expiryDate = new Date(expirationTime);
+      const userData = await createUser({
+        name,
+        email,
+        userId: uid,
+        avatar: params?.photo,
+        withGoogle: true,
+      });
+      const timeNow = new Date();
+      const millisecondsUntilExpiry = Number(expiryDate) - Number(timeNow);
+
+      dispatch(authenticate({ token: accessToken, userData }));
+      saveDataToStorage(accessToken, uid, expiryDate);
+
+      timer = setTimeout(() => {
+        dispatch(userLogout());
+      }, millisecondsUntilExpiry);
+
+      return uid;
+    } catch (error) {
+      const errorCode = (error as { code: string }).code;
+      let message = "Something went wrong";
+
+      if (errorCode === "auth/email-already-in-use") {
+        message = "This email is already in use";
       }
 
       showMessage({
