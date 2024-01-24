@@ -7,9 +7,13 @@ import { showMessage } from "react-native-flash-message";
 import { customEvent } from "vexo-analytics";
 import { screens } from "../../config/screens";
 import { AppDispatch } from "../../store/store";
-import { signUpForGoogle } from "../actions/authActions";
+import { signIn, signUpForGoogle } from "../actions/authActions";
 
-export const googleSignIn = async (dispatch: AppDispatch, router: Router) => {
+export const googleSignIn = async (
+  dispatch: AppDispatch,
+  router: Router,
+  isSignIn = false
+) => {
   try {
     GoogleSignin.configure({
       webClientId: process.env.EXPO_PUBLIC_WEB_CLIENT_ID, // client ID of type WEB for your server. Required to get the `idToken` on the user object, and for offline access.
@@ -22,26 +26,33 @@ export const googleSignIn = async (dispatch: AppDispatch, router: Router) => {
     const userInfo = await GoogleSignin.signIn();
 
     const { name, email, photo, id } = userInfo.user;
-    const userId = await dispatch(
-      signUpForGoogle({
-        name: name || "Google user",
-        email,
-        photo: photo || undefined,
-        password: id,
-      })
-    );
 
-    console.log("🚀 ~ googleSignIn ~ userId:", userId);
+    let userId = undefined;
+
+    if (isSignIn) {
+      userId = await dispatch(signIn({ email, password: id }));
+    } else {
+      userId = await dispatch(
+        signUpForGoogle({
+          name: name || "Google user",
+          email,
+          photo: photo || undefined,
+          password: id,
+        })
+      );
+    }
 
     if (userId) {
-      showMessage({
-        message: "You did it",
-        type: "success",
-        titleStyle: { fontFamily: "Exo2-Bold" },
-      });
+      if (!isSignIn) {
+        showMessage({
+          message: "You did it",
+          type: "success",
+          titleStyle: { fontFamily: "Exo2-Bold" },
+        });
+      }
 
       router.replace({
-        pathname: screens.LogIn,
+        pathname: isSignIn ? screens.FaceId : screens.LogIn,
       });
     }
   } catch (error) {

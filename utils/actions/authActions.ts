@@ -88,7 +88,7 @@ const createUser = async (params: CreateUserParamsType) => {
     _id: userId,
     cryptoList: [],
     plan: "basic",
-    verified: false,
+    verified: !!params?.withGoogle,
     signUpDate: new Date().toISOString(),
     avatar: params?.avatar,
     withGoogle: params?.withGoogle,

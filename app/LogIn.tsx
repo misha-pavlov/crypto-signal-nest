@@ -11,6 +11,7 @@ import { Link, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useCallback, useEffect, useState } from "react";
 import * as LocalAuthentication from "expo-local-authentication";
+import { AntDesign } from "@expo/vector-icons";
 import { mmkvStorage } from "../config/mmkvStorage";
 import { authSafeArea, mmkvStorageKeys } from "../config/constants";
 import { withStyledProvider } from "../hocs/withStyledProvider";
@@ -19,6 +20,7 @@ import { colors } from "../config/colors";
 import { AuthHeader, CSNInput, AuthBottom } from "../components";
 import { useAppDispatch } from "../store/store";
 import { faceIdSignIn, signIn } from "../utils/actions/authActions";
+import { googleSignIn } from "../utils/google";
 
 const Login = () => {
   const router = useRouter();
@@ -83,6 +85,12 @@ const Login = () => {
     }
   }, [email, password]);
 
+  const googleAuth = useCallback(async () => {
+    setIsLoading(true);
+    await googleSignIn(dispatch, router, true);
+    setIsLoading(false);
+  }, [dispatch, router]);
+
   return (
     <SafeAreaView style={authSafeArea}>
       <VStack justifyContent="space-between" flex={1} px={16}>
@@ -144,7 +152,16 @@ const Login = () => {
               )}
             </Button>
 
-            <Button borderRadius={10} h={40}>
+            <Button
+              borderRadius={10}
+              h={40}
+              onPress={googleAuth}
+              isDisabled={isLoading}
+              backgroundColor={colors.white}
+              gap={4}
+              alignItems="center"
+            >
+              <AntDesign name="google" size={20} color={colors.primaryBlack} />
               <Text color={colors.primaryBlack}>Log in with Google</Text>
             </Button>
 
