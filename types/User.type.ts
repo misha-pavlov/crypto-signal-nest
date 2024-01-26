@@ -14,7 +14,7 @@ export type UserType = {
   plan: "basic" | "silver" | "gold" | "platinum";
   signUpDate: string;
   verified: boolean;
-  avatar?: string;
+  avatar?: string | null;
   password?: string;
   withGoogle?: boolean;
   withFacebook?: boolean;

@@ -94,7 +94,7 @@ const CheckEmail = () => {
       return { href: screens.SignUp, backText: "Back to sign up" };
     }
 
-    return { href: screens.LogIn, backText: "Back to log in" };
+    return { href: screens.LogIn, backText: "Back to sign in" };
   }, [isFromSignUp]);
 
   useEffect(() => {

@@ -12,6 +12,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useCallback, useEffect, useState } from "react";
 import * as LocalAuthentication from "expo-local-authentication";
 import { AntDesign } from "@expo/vector-icons";
+import {
+  appleAuth as appleAuthLib,
+  AppleButton,
+} from "@invertase/react-native-apple-authentication";
 import { mmkvStorage } from "../config/mmkvStorage";
 import { authSafeArea, mmkvStorageKeys } from "../config/constants";
 import { withStyledProvider } from "../hocs/withStyledProvider";
@@ -21,6 +25,7 @@ import { AuthHeader, CSNInput, AuthBottom } from "../components";
 import { useAppDispatch } from "../store/store";
 import { faceIdSignIn, signIn } from "../utils/actions/authActions";
 import { googleAuth as googleSignIn } from "../utils/google";
+import { appleAuth } from "../utils/apple";
 
 const Login = () => {
   const router = useRouter();
@@ -96,7 +101,7 @@ const Login = () => {
       <VStack justifyContent="space-between" flex={1} px={16}>
         <View>
           <AuthHeader
-            title="Log in to your account"
+            title="Sign in to your account"
             subTitle="Welcome back! Please enter your details."
           />
 
@@ -148,7 +153,7 @@ const Login = () => {
               {isLoading ? (
                 <ButtonSpinner mr="$1" />
               ) : (
-                <Text color={colors.primaryBlack}>Log in</Text>
+                <Text color={colors.primaryBlack}>Sign in</Text>
               )}
             </Button>
 
@@ -162,12 +167,18 @@ const Login = () => {
               alignItems="center"
             >
               <AntDesign name="google" size={20} color={colors.primaryBlack} />
-              <Text color={colors.primaryBlack}>Log in with Google</Text>
+              <Text color={colors.primaryBlack}>Sign in with Google</Text>
             </Button>
 
-            <Button borderRadius={10} h={40}>
-              <Text color={colors.primaryBlack}>Log in with Facebook</Text>
-            </Button>
+            {appleAuthLib.isSupported && (
+              <AppleButton
+                cornerRadius={10}
+                style={{ width: '100%', height: 40 }}
+                buttonStyle={AppleButton.Style.WHITE}
+                buttonType={AppleButton.Type.SIGN_IN}
+                onPress={() => appleAuth(dispatch, router, true)}
+              />
+            )}
           </VStack>
         </View>
 

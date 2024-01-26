@@ -76,7 +76,7 @@ type CreateUserParamsType = {
   name: string;
   email: string;
   userId: string;
-  avatar?: string;
+  avatar?: string | null;
   withGoogle?: boolean;
 };
 
@@ -259,7 +259,7 @@ export const signUpForGoogle = (params: {
         name,
         email,
         userId: uid,
-        avatar: params?.photo,
+        avatar: params?.photo || null,
         withGoogle: true,
       });
       const timeNow = new Date();
@@ -274,6 +274,7 @@ export const signUpForGoogle = (params: {
 
       return uid;
     } catch (error) {
+      console.log("🚀 ~ return ~ error:", error)
       const errorCode = (error as { code: string }).code;
       let message = "Something went wrong";
 

@@ -52,7 +52,7 @@ const EmailForNewPassword = () => {
           <Text color={colors.primaryBlack}>Submit</Text>
         </Button>
 
-        <AuthBackButton href={screens.LogIn} backText="Back to log in" />
+        <AuthBackButton href={screens.LogIn} backText="Back to sign in" />
       </VStack>
     </SafeAreaView>
   );

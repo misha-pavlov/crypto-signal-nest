@@ -24,10 +24,8 @@ export const googleAuth = async (
 
     await GoogleSignin.hasPlayServices();
     const userInfo = await GoogleSignin.signIn();
-
     const { name, email, photo, id } = userInfo.user;
-
-    let userId = undefined;
+    let userId;
 
     if (isSignIn) {
       userId = await dispatch(signIn({ email, password: id }));
@@ -66,7 +64,7 @@ export const googleAuth = async (
           break;
       }
     } else {
-      const errorText = "Google signin error";
+      const errorText = "Google auth error";
       console.error(errorText, error);
       customEvent(errorText, error);
       showMessage({

@@ -12,6 +12,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useState, useCallback } from "react";
 import { useRouter } from "expo-router";
 import { AntDesign } from "@expo/vector-icons";
+import {
+  appleAuth as appleAuthLib,
+  AppleButton,
+} from "@invertase/react-native-apple-authentication";
 import { colors } from "../config/colors";
 import { AuthHeader, CSNInput, AuthBottom } from "../components";
 import { screens } from "../config/screens";
@@ -19,7 +23,8 @@ import { authSafeArea } from "../config/constants";
 import { useAppDispatch } from "../store/store";
 import { signUp } from "../utils/actions/authActions";
 import { withStyledProvider } from "../hocs/withStyledProvider";
-import { googleAuth as googleSignUp} from "../utils/google";
+import { googleAuth as googleSignUp } from "../utils/google";
+import { appleAuth } from "../utils/apple";
 
 const SignUp = () => {
   const router = useRouter();
@@ -120,15 +125,21 @@ const SignUp = () => {
               <Text color={colors.primaryBlack}>Sign up with Google</Text>
             </Button>
 
-            <Button borderRadius={10} h={40}>
-              <Text color={colors.primaryBlack}>Sign up with Facebook</Text>
-            </Button>
+            {appleAuthLib.isSupported && (
+              <AppleButton
+                cornerRadius={10}
+                style={{ width: "100%", height: 40 }}
+                buttonStyle={AppleButton.Style.WHITE}
+                buttonType={AppleButton.Type.SIGN_UP}
+                onPress={() => appleAuth(dispatch, router)}
+              />
+            )}
           </VStack>
         </View>
 
         <AuthBottom
           firstText="Already have an account?"
-          secondText="Log in"
+          secondText="Sign in"
           href={screens.LogIn}
         />
       </VStack>
