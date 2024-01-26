@@ -14,6 +14,7 @@ import { hexToRgba } from "../helpers";
 
 type CSNInputPropsType = {
   placeholder: string;
+  onChangeValue: (value: string) => void;
   label?: string;
   leftIcon?: typeof MailIcon;
   isRequired?: boolean;
@@ -31,6 +32,7 @@ const CSNInput: FC<CSNInputPropsType> = ({
   isRequired,
   onlyInput,
   isDisabled,
+  onChangeValue,
 }) => (
   <FormControl isRequired={isRequired}>
     {!onlyInput && (
@@ -63,6 +65,8 @@ const CSNInput: FC<CSNInputPropsType> = ({
         placeholder={placeholder}
         color={colors.white}
         type={isPassword ? "password" : undefined}
+        autoCapitalize="none"
+        onChangeText={(text) => onChangeValue(text)}
       />
     </Input>
   </FormControl>

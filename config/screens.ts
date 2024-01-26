@@ -7,7 +7,6 @@ export const screens = {
   FaceId: "/FaceId",
   LogIn: "/LogIn",
   Main: "/Main",
-  NewPassword: "/NewPassword",
   Profile: "/Profile",
   SignUp: "/SignUp",
   StartScreen: "/StartScreen",

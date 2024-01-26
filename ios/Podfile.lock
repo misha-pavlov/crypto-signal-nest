@@ -1,4 +1,10 @@
 PODS:
+  - AppAuth (1.6.2):
+    - AppAuth/Core (= 1.6.2)
+    - AppAuth/ExternalUserAgent (= 1.6.2)
+  - AppAuth/Core (1.6.2)
+  - AppAuth/ExternalUserAgent (1.6.2):
+    - AppAuth/Core
   - boost (1.76.0)
   - DoubleConversion (1.1.6)
   - EXApplication (5.3.1):
@@ -11,8 +17,12 @@ PODS:
     - ExpoModulesCore
   - EXFont (11.4.0):
     - ExpoModulesCore
-  - Expo (49.0.21):
+  - Expo (49.0.22):
     - ExpoModulesCore
+  - ExpoAdapterGoogleSignIn (10.1.1):
+    - ExpoModulesCore
+    - GoogleSignIn (~> 7.0)
+    - React-Core
   - ExpoGL (13.0.1):
     - ExpoModulesCore
     - ReactCommon/turbomodule/core
@@ -24,7 +34,7 @@ PODS:
     - ExpoModulesCore
   - ExpoLocalAuthentication (13.4.1):
     - ExpoModulesCore
-  - ExpoModulesCore (1.5.12):
+  - ExpoModulesCore (1.5.13):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
     - React-NativeModulesApple
@@ -44,6 +54,14 @@ PODS:
     - ReactCommon/turbomodule/core (= 0.72.6)
   - fmt (6.2.1)
   - glog (0.3.5)
+  - GoogleSignIn (7.0.0):
+    - AppAuth (~> 1.5)
+    - GTMAppAuth (< 3.0, >= 1.3)
+    - GTMSessionFetcher/Core (< 4.0, >= 1.1)
+  - GTMAppAuth (2.0.0):
+    - AppAuth/Core (~> 1.6)
+    - GTMSessionFetcher/Core (< 4.0, >= 1.5)
+  - GTMSessionFetcher/Core (3.2.0)
   - libwebp (1.3.2):
     - libwebp/demux (= 1.3.2)
     - libwebp/mux (= 1.3.2)
@@ -456,6 +474,8 @@ PODS:
     - React-jsi (= 0.72.6)
     - React-logger (= 0.72.6)
     - React-perflogger (= 0.72.6)
+  - RNAppleAuthentication (2.3.0):
+    - React-Core
   - RNCAsyncStorage (1.18.2):
     - React-Core
   - RNFastImage (8.6.3):
@@ -465,6 +485,9 @@ PODS:
   - RNFS (2.20.0):
     - React-Core
   - RNGestureHandler (2.12.1):
+    - React-Core
+  - RNGoogleSignin (10.1.1):
+    - GoogleSignIn (~> 7.0)
     - React-Core
   - RNReanimated (3.3.0):
     - DoubleConversion
@@ -520,6 +543,7 @@ DEPENDENCIES:
   - EXFileSystem (from `../node_modules/expo-file-system/ios`)
   - EXFont (from `../node_modules/expo-font/ios`)
   - Expo (from `../node_modules/expo`)
+  - "ExpoAdapterGoogleSignIn (from `../node_modules/@react-native-google-signin/google-signin/expo/ios`)"
   - ExpoGL (from `../node_modules/expo-gl`)
   - ExpoHead (from `../node_modules/expo-head/ios`)
   - ExpoKeepAwake (from `../node_modules/expo-keep-awake/ios`)
@@ -569,10 +593,12 @@ DEPENDENCIES:
   - React-runtimescheduler (from `../node_modules/react-native/ReactCommon/react/renderer/runtimescheduler`)
   - React-utils (from `../node_modules/react-native/ReactCommon/react/utils`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - "RNAppleAuthentication (from `../node_modules/@invertase/react-native-apple-authentication`)"
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - RNFastImage (from `../node_modules/react-native-fast-image`)
   - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - "RNGoogleSignin (from `../node_modules/@react-native-google-signin/google-signin`)"
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNShare (from `../node_modules/react-native-share`)
@@ -582,7 +608,11 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - AppAuth
     - fmt
+    - GoogleSignIn
+    - GTMAppAuth
+    - GTMSessionFetcher
     - libwebp
     - lottie-ios
     - MMKV
@@ -608,6 +638,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-font/ios"
   Expo:
     :path: "../node_modules/expo"
+  ExpoAdapterGoogleSignIn:
+    :path: "../node_modules/@react-native-google-signin/google-signin/expo/ios"
   ExpoGL:
     :path: "../node_modules/expo-gl"
   ExpoHead:
@@ -704,6 +736,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/react/utils"
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  RNAppleAuthentication:
+    :path: "../node_modules/@invertase/react-native-apple-authentication"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-async-storage/async-storage"
   RNFastImage:
@@ -712,6 +746,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-fs"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
+  RNGoogleSignin:
+    :path: "../node_modules/@react-native-google-signin/google-signin"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
@@ -726,6 +762,7 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
+  AppAuth: 3bb1d1cd9340bd09f5ed189fb00b1cc28e1e8570
   boost: 57d2868c099736d80fcd648bf211b4431e51a558
   DoubleConversion: 5189b271737e1565bdce30deb4a08d647e3f5f54
   EXApplication: 042aa2e3f05258a16962ea1a9914bf288db9c9a1
@@ -733,18 +770,22 @@ SPEC CHECKSUMS:
   EXConstants: ce5bbea779da8031ac818c36bea41b10e14d04e1
   EXFileSystem: f8b838a880254de42a5a7da20ed5ce12e2697c1b
   EXFont: 738c44c390953ebcbab075a4848bfbef025fd9ee
-  Expo: 61a8e1aa94311557c137c0a4dfd4fe78281cfbb4
+  Expo: 9060b49fecf07bebf1dd967730d079aa5e750ebe
+  ExpoAdapterGoogleSignIn: 6c55782832b7fbdc2c27dac05ef00445c103b8f3
   ExpoGL: 77f5c4f4c1efeebceabbbcb18540208c5ab67d12
   ExpoHead: ac95331e2a45cb94f6aee8ba6b8cb3d0a2cc6817
   ExpoKeepAwake: be4cbd52d9b177cde0fd66daa1913afa3161fc1d
   ExpoLinearGradient: 5966dd5d49872cc9c104fedc8bbc298b6049b2e8
   ExpoLocalAuthentication: bd9d9037a96a11ccc456e327ddb404df02da10ca
-  ExpoModulesCore: c480fd4e3c7c8e81f0a6ba3a7c56869f25fe016d
+  ExpoModulesCore: cf14fc49a3d5df3ed3cf2a38fc758d073bfd1c13
   EXSplashScreen: c0e7f2d4a640f3b875808ed0b88575538daf6d82
   FBLazyVector: 748c0ef74f2bf4b36cfcccf37916806940a64c32
   FBReactNativeSpec: 966f29e4e697de53a3b366355e8f57375c856ad9
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 04b94705f318337d7ead9e6d17c019bd9b1f6b1b
+  GoogleSignIn: b232380cf495a429b8095d3178a8d5855b42e842
+  GTMAppAuth: 99fb010047ba3973b7026e45393f51f27ab965ae
+  GTMSessionFetcher: 41b9ef0b4c08a6db4b7eb51a21ae5183ec99a2c8
   libwebp: 1786c9f4ff8a279e4dac1e8f385004d5fc253009
   lottie-ios: 8f97d3271e155c2d688875c29cd3c74908aef5f8
   lottie-react-native: 8f9d4be452e23f6e5ca0fdc11669dc99ab52be81
@@ -787,10 +828,12 @@ SPEC CHECKSUMS:
   React-runtimescheduler: 13b0c5e9354ccfc3dc9a391231e55debeb688523
   React-utils: fa59c9a3375fb6f4aeb66714fd3f7f76b43a9f16
   ReactCommon: 5f73972d2abd8a85e44f27317bf77418a74d3340
+  RNAppleAuthentication: e99eaf3c4c01ad8ecb6125dd6f0cfd98871685b5
   RNCAsyncStorage: ddc4ee162bfd41b0d2c68bf2d95acd81dd7f1f93
   RNFastImage: 5c9c9fed9c076e521b3f509fe79e790418a544e8
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: c0d04458598fcb26052494ae23dda8f8f5162b13
+  RNGoogleSignin: aac5c1ec73422109dec1da770247a1e410dcc620
   RNReanimated: 3ffa3d63576ecd26a4f8772d03029cccaf41b5d7
   RNScreens: 50ffe2fa2342eabb2d0afbe19f7c1af286bc7fb3
   RNShare: 859ff710211285676b0bcedd156c12437ea1d564
@@ -801,6 +844,6 @@ SPEC CHECKSUMS:
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Yoga: b76f1acfda8212aa16b7e26bcce3983230c82603
 
-PODFILE CHECKSUM: 5b2c4e8cccc63a82ce078a8860eb00017206d0b6
+PODFILE CHECKSUM: 190f5900c41d7f9bcf4f20cc824811613f87e2af
 
 COCOAPODS: 1.11.3

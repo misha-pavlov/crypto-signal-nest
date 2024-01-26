@@ -1,10 +1,12 @@
 import { createStyle } from '@gluestack-style/react';
+import { hexToRgba } from '../../helpers';
+import { colors } from '../colors';
 
 export const InputField = createStyle({
   flex: 1,
   color: '$textLight900',
   props: {
-    placeholderTextColor: '$textLight500',
+    placeholderTextColor: hexToRgba(colors.white, 0.5),
   },
   _dark: {
     color: '$textDark50',
