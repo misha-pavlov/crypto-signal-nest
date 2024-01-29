@@ -4,13 +4,9 @@ import { showMessage } from "react-native-flash-message";
 import { customEvent } from "vexo-analytics";
 import { screens } from "../../config/screens";
 import { AppDispatch } from "../../store/store";
-import { signIn, signUpForGoogle } from "../actions/authActions";
+import { signInWithAppleCredential } from "../actions/authActions";
 
-export const appleAuth = async (
-  dispatch: AppDispatch,
-  router: Router,
-  isSignIn = false
-) => {
+export const appleAuth = async (dispatch: AppDispatch, router: Router) => {
   try {
     const appleAuthRequestResponse = await appleAuthLib.performRequest({
       requestedOperation: appleAuthLib.Operation.LOGIN,
@@ -23,36 +19,18 @@ export const appleAuth = async (
 
     // use credentialState response to ensure the user is authenticated
     if (credentialState === appleAuthLib.State.AUTHORIZED) {
-      const { user, fullName } = appleAuthRequestResponse;
-      let userId;
-      const email = `${user.replaceAll('.', '')}@fake.com`;
+      const { identityToken, nonce } = appleAuthRequestResponse;
 
-      if (isSignIn) {
-        userId = await dispatch(signIn({ email, password: user }));
-      } else {
-        userId = await dispatch(
-          signUpForGoogle({
-            name: fullName?.familyName
-              ? `${fullName?.familyName} ${fullName?.givenName}`
-              : "Apple user",
-            email,
-            password: user,
-          })
+      if (identityToken && nonce) {
+        const uid = await signInWithAppleCredential(
+          identityToken,
+          nonce,
+          dispatch
         );
-      }
 
-      if (userId) {
-        if (!isSignIn) {
-          showMessage({
-            message: "You did it",
-            type: "success",
-            titleStyle: { fontFamily: "Exo2-Bold" },
-          });
+        if (uid) {
+          router.replace(screens.FaceId);
         }
-
-        router.replace({
-          pathname: isSignIn ? screens.FaceId : screens.LogIn,
-        });
       }
     }
   } catch (error) {

@@ -1,7 +1,10 @@
 import {
+  Auth,
   createUserWithEmailAndPassword,
   getAuth,
   GoogleAuthProvider,
+  OAuthCredential,
+  OAuthProvider,
   signInWithCredential,
   signInWithEmailAndPassword,
 } from "firebase/auth";
@@ -235,37 +238,73 @@ export const faceIdSignIn = (userId: string) => {
   };
 };
 
+const csnSignInWithCredential = async (
+  auth: Auth,
+  credential: OAuthCredential,
+  dispatch: AppDispatch
+) => {
+  const result = await signInWithCredential(auth, credential);
+  console.log("🚀 ~ result:", result);
+  // @ts-ignore according type stsTokenManager doesn't exist, but acually it does
+  const { uid, stsTokenManager } = result.user;
+  const { accessToken, expirationTime } = stsTokenManager;
+
+  const expiryDate = new Date(expirationTime);
+  const userData = await getUserData(uid);
+
+  const timeNow = new Date();
+  const millisecondsUntilExpiry = Number(expiryDate) - Number(timeNow);
+
+  dispatch(authenticate({ token: accessToken, userData }));
+  saveDataToStorage(accessToken, uid, expiryDate);
+
+  timer = setTimeout(() => {
+    dispatch(userLogout());
+  }, millisecondsUntilExpiry);
+
+  return uid;
+};
+
 export const signInWithGoogleCredential = async (
   idToken: string,
   dispatch: AppDispatch
 ) => {
   const app = getFirebaseApp();
   const auth = getAuth(app);
-
   const credential = GoogleAuthProvider.credential(idToken);
 
   try {
-    const result = await signInWithCredential(auth, credential);
-    // @ts-ignore according type stsTokenManager doesn't exist, but acually it does
-    const { uid, stsTokenManager } = result.user;
-    const { accessToken, expirationTime } = stsTokenManager;
-
-    const expiryDate = new Date(expirationTime);
-    const userData = await getUserData(uid);
-
-    const timeNow = new Date();
-    const millisecondsUntilExpiry = Number(expiryDate) - Number(timeNow);
-
-    dispatch(authenticate({ token: accessToken, userData }));
-    saveDataToStorage(accessToken, uid, expiryDate);
-
-    timer = setTimeout(() => {
-      dispatch(userLogout());
-    }, millisecondsUntilExpiry);
-
+    const uid = await csnSignInWithCredential(auth, credential, dispatch);
     return uid;
   } catch (error) {
     const message = "Something went wrong with google credential sign in";
+
+    showMessage({
+      message,
+      type: "danger",
+      titleStyle: { fontFamily: "Exo2-Bold" },
+    });
+
+    throw new Error(message);
+  }
+};
+
+export const signInWithAppleCredential = async (
+  idToken: string,
+  rawNonce: string,
+  dispatch: AppDispatch
+) => {
+  const app = getFirebaseApp();
+  const auth = getAuth(app);
+  const provider = new OAuthProvider("apple.com");
+  const credential = provider.credential({ idToken, rawNonce });
+  console.log("🚀 ~ credential:", credential);
+
+  try {
+    const uid = await csnSignInWithCredential(auth, credential, dispatch);
+    return uid;
+  } catch (error) {
+    const message = "Something went wrong with apple credential sign in";
 
     showMessage({
       message,

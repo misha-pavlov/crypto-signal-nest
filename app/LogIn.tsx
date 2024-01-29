@@ -176,7 +176,7 @@ const Login = () => {
                 style={{ width: "100%", height: 40 }}
                 buttonStyle={AppleButton.Style.WHITE}
                 buttonType={AppleButton.Type.SIGN_IN}
-                onPress={() => appleAuth(dispatch, router, true)}
+                onPress={() => appleAuth(dispatch, router)}
               />
             )}
           </VStack>
