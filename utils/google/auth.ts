@@ -25,7 +25,7 @@ export const googleAuth = async (dispatch: AppDispatch, router: Router) => {
       const uid = await signInWithGoogleCredential(idToken, dispatch);
 
       if (uid) {
-        router.replace(screens.FaceId);
+        router.replace({ pathname: screens.FaceId, params: { userId: uid } });
       }
     }
   } catch (error) {

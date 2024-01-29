@@ -29,7 +29,7 @@ export const appleAuth = async (dispatch: AppDispatch, router: Router) => {
         );
 
         if (uid) {
-          router.replace(screens.FaceId);
+          router.replace({ pathname: screens.FaceId, params: { userId: uid } });
         }
       }
     }

@@ -298,7 +298,6 @@ export const signInWithAppleCredential = async (
   const auth = getAuth(app);
   const provider = new OAuthProvider("apple.com");
   const credential = provider.credential({ idToken, rawNonce });
-  console.log("🚀 ~ credential:", credential);
 
   try {
     const uid = await csnSignInWithCredential(auth, credential, dispatch);
