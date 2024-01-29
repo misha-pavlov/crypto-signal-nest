@@ -1,6 +1,8 @@
 import {
   createUserWithEmailAndPassword,
   getAuth,
+  GoogleAuthProvider,
+  signInWithCredential,
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { child, getDatabase, ref, set } from "firebase/database";
@@ -233,62 +235,44 @@ export const faceIdSignIn = (userId: string) => {
   };
 };
 
-export const signUpForGoogle = (params: {
-  name: string;
-  email: string;
-  password: string;
-  photo?: string;
-}) => {
-  return async (dispatch: AppDispatch) => {
-    const { email, name, password } = params;
-    const app = getFirebaseApp();
-    const auth = getAuth(app);
+export const signInWithGoogleCredential = async (
+  idToken: string,
+  dispatch: AppDispatch
+) => {
+  const app = getFirebaseApp();
+  const auth = getAuth(app);
 
-    try {
-      const result = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      // @ts-ignore according type stsTokenManager doesn't exist, but acually it does
-      const { uid, stsTokenManager } = result.user;
-      const { accessToken, expirationTime } = stsTokenManager;
+  const credential = GoogleAuthProvider.credential(idToken);
 
-      const expiryDate = new Date(expirationTime);
-      const userData = await createUser({
-        name,
-        email,
-        userId: uid,
-        avatar: params?.photo || null,
-        withGoogle: true,
-      });
-      const timeNow = new Date();
-      const millisecondsUntilExpiry = Number(expiryDate) - Number(timeNow);
+  try {
+    const result = await signInWithCredential(auth, credential);
+    // @ts-ignore according type stsTokenManager doesn't exist, but acually it does
+    const { uid, stsTokenManager } = result.user;
+    const { accessToken, expirationTime } = stsTokenManager;
 
-      dispatch(authenticate({ token: accessToken, userData }));
-      saveDataToStorage(accessToken, uid, expiryDate);
+    const expiryDate = new Date(expirationTime);
+    const userData = await getUserData(uid);
 
-      timer = setTimeout(() => {
-        dispatch(userLogout());
-      }, millisecondsUntilExpiry);
+    const timeNow = new Date();
+    const millisecondsUntilExpiry = Number(expiryDate) - Number(timeNow);
 
-      return uid;
-    } catch (error) {
-      console.log("🚀 ~ return ~ error:", error)
-      const errorCode = (error as { code: string }).code;
-      let message = "Something went wrong";
+    dispatch(authenticate({ token: accessToken, userData }));
+    saveDataToStorage(accessToken, uid, expiryDate);
 
-      if (errorCode === "auth/email-already-in-use") {
-        message = "This email is already in use";
-      }
+    timer = setTimeout(() => {
+      dispatch(userLogout());
+    }, millisecondsUntilExpiry);
 
-      showMessage({
-        message,
-        type: "danger",
-        titleStyle: { fontFamily: "Exo2-Bold" },
-      });
+    return uid;
+  } catch (error) {
+    const message = "Something went wrong with google credential sign in";
 
-      throw new Error(message);
-    }
-  };
+    showMessage({
+      message,
+      type: "danger",
+      titleStyle: { fontFamily: "Exo2-Bold" },
+    });
+
+    throw new Error(message);
+  }
 };

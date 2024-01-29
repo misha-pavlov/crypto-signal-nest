@@ -7,13 +7,9 @@ import { showMessage } from "react-native-flash-message";
 import { customEvent } from "vexo-analytics";
 import { screens } from "../../config/screens";
 import { AppDispatch } from "../../store/store";
-import { signIn, signUpForGoogle } from "../actions/authActions";
+import { signInWithGoogleCredential } from "../actions/authActions";
 
-export const googleAuth = async (
-  dispatch: AppDispatch,
-  router: Router,
-  isSignIn = false
-) => {
+export const googleAuth = async (dispatch: AppDispatch, router: Router) => {
   try {
     GoogleSignin.configure({
       webClientId: process.env.EXPO_PUBLIC_WEB_CLIENT_ID, // client ID of type WEB for your server. Required to get the `idToken` on the user object, and for offline access.
@@ -23,35 +19,14 @@ export const googleAuth = async (
     });
 
     await GoogleSignin.hasPlayServices();
-    const userInfo = await GoogleSignin.signIn();
-    const { name, email, photo, id } = userInfo.user;
-    let userId;
+    const { idToken } = await GoogleSignin.signIn();
 
-    if (isSignIn) {
-      userId = await dispatch(signIn({ email, password: id }));
-    } else {
-      userId = await dispatch(
-        signUpForGoogle({
-          name: name || "Google user",
-          email,
-          photo: photo || undefined,
-          password: id,
-        })
-      );
-    }
+    if (idToken) {
+      const uid = await signInWithGoogleCredential(idToken, dispatch);
 
-    if (userId) {
-      if (!isSignIn) {
-        showMessage({
-          message: "You did it",
-          type: "success",
-          titleStyle: { fontFamily: "Exo2-Bold" },
-        });
+      if (uid) {
+        router.replace(screens.FaceId);
       }
-
-      router.replace({
-        pathname: isSignIn ? screens.FaceId : screens.LogIn,
-      });
     }
   } catch (error) {
     if (error?.code) {

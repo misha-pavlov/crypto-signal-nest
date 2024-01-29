@@ -92,7 +92,7 @@ const Login = () => {
 
   const googleAuth = useCallback(async () => {
     setIsLoading(true);
-    await googleSignIn(dispatch, router, true);
+    await googleSignIn(dispatch, router);
     setIsLoading(false);
   }, [dispatch, router]);
 
@@ -173,7 +173,7 @@ const Login = () => {
             {appleAuthLib.isSupported && (
               <AppleButton
                 cornerRadius={10}
-                style={{ width: '100%', height: 40 }}
+                style={{ width: "100%", height: 40 }}
                 buttonStyle={AppleButton.Style.WHITE}
                 buttonType={AppleButton.Type.SIGN_IN}
                 onPress={() => appleAuth(dispatch, router, true)}

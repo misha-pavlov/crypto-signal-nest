@@ -11,11 +11,6 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState, useCallback } from "react";
 import { useRouter } from "expo-router";
-import { AntDesign } from "@expo/vector-icons";
-import {
-  appleAuth as appleAuthLib,
-  AppleButton,
-} from "@invertase/react-native-apple-authentication";
 import { colors } from "../config/colors";
 import { AuthHeader, CSNInput, AuthBottom } from "../components";
 import { screens } from "../config/screens";
@@ -24,7 +19,6 @@ import { useAppDispatch } from "../store/store";
 import { signUp } from "../utils/actions/authActions";
 import { withStyledProvider } from "../hocs/withStyledProvider";
 import { googleAuth as googleSignUp } from "../utils/google";
-import { appleAuth } from "../utils/apple";
 
 const SignUp = () => {
   const router = useRouter();
@@ -48,12 +42,6 @@ const SignUp = () => {
       setIsLoading(false);
     }
   }, [name, email, password]);
-
-  const googleAuth = useCallback(async () => {
-    setIsLoading(true);
-    await googleSignUp(dispatch, router);
-    setIsLoading(false);
-  }, [dispatch, router]);
 
   return (
     <SafeAreaView style={authSafeArea}>
@@ -111,29 +99,6 @@ const SignUp = () => {
                 <Text color={colors.primaryBlack}>Sign up</Text>
               )}
             </Button>
-
-            <Button
-              borderRadius={10}
-              h={40}
-              onPress={googleAuth}
-              isDisabled={isLoading}
-              backgroundColor={colors.white}
-              gap={4}
-              alignItems="center"
-            >
-              <AntDesign name="google" size={20} color={colors.primaryBlack} />
-              <Text color={colors.primaryBlack}>Sign up with Google</Text>
-            </Button>
-
-            {appleAuthLib.isSupported && (
-              <AppleButton
-                cornerRadius={10}
-                style={{ width: "100%", height: 40 }}
-                buttonStyle={AppleButton.Style.WHITE}
-                buttonType={AppleButton.Type.SIGN_UP}
-                onPress={() => appleAuth(dispatch, router)}
-              />
-            )}
           </VStack>
         </View>
 
