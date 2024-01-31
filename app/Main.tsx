@@ -17,6 +17,7 @@ import {
 import { screens } from "../config/screens";
 import { hexToRgba } from "../helpers";
 import { Crypto } from "../types/Crypto.types";
+import EmptySvg from "../assets/svg/EmptySvg";
 
 const Main = () => {
   const router = useRouter();
@@ -24,7 +25,7 @@ const Main = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedList, setSelectedList] = useState<string[]>([]);
-  const [cryptoArray, setCryptoArray] = useState(mockCryptoArray);
+  const [cryptoArray, setCryptoArray] = useState<Crypto[]>([]);
 
   const renderItem = useCallback(
     ({ item, drag }: RenderItemParams<Crypto>) => {
@@ -162,7 +163,7 @@ const Main = () => {
               <Divider h={1} backgroundColor={colors.grey} my={9} />
             )}
             ListFooterComponent={() =>
-              !isEdit && (
+              !isEdit ? (
                 <Center mt={32}>
                   <TouchableOpacity
                     onPress={() => router.push(screens.AddNewCrypto)}
@@ -184,7 +185,12 @@ const Main = () => {
                     </HStack>
                   </TouchableOpacity>
                 </Center>
-              )
+              ) : null
+            }
+            ListEmptyComponent={
+              <Center>
+                <EmptySvg />
+              </Center>
             }
           />
         </>
