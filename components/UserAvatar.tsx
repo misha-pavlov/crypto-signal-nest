@@ -7,7 +7,7 @@ import { colors } from "../config/colors";
 type UserAvatarPropsType = {
   bigSize?: boolean;
   showEditIcon?: boolean;
-  uri?: string;
+  uri?: string | null;
 };
 
 const UserAvatar: FC<UserAvatarPropsType> = ({

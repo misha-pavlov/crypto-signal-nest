@@ -91,11 +91,11 @@ const createUser = async (params: CreateUserParamsType) => {
     name,
     email,
     _id: userId,
-    cryptoList: [],
+    cryptoList: JSON.stringify([]),
     plan: "basic",
     verified: true,
     signUpDate: new Date().toISOString(),
-    avatar: params?.avatar,
+    avatar: params?.avatar || null,
   };
 
   const dbRef = ref(getDatabase());
@@ -260,11 +260,26 @@ const csnSignInWithCredential = async (
 
   const expiryDate = new Date(expirationTime);
   const userData = await getUserData(uid);
-
   const timeNow = new Date();
   const millisecondsUntilExpiry = Number(expiryDate) - Number(timeNow);
 
-  dispatch(authenticate({ token: accessToken, userData }));
+  if (!userData) {
+    const newUser = result.user;
+    const createdUser = await createUser({
+      name:
+        newUser?.displayName ||
+        newUser?.email ||
+        `user ${Math.floor(10000 + Math.random() * 90000)}`,
+      email: newUser?.email || "no email :(",
+      userId: uid,
+      avatar: newUser?.photoURL,
+    });
+
+    dispatch(authenticate({ token: accessToken, userData: createdUser }));
+  } else {
+    dispatch(authenticate({ token: accessToken, userData }));
+  }
+
   saveDataToStorage(accessToken, uid, expiryDate);
 
   timer = setTimeout(() => {
@@ -286,6 +301,7 @@ export const signInWithGoogleCredential = async (
     const uid = await csnSignInWithCredential(auth, credential, dispatch);
     mmkvStorage.set(mmkvStorageKeys.isGoogleUser, true);
     mmkvStorage.set(mmkvStorageKeys.idToken, idToken);
+    mmkvStorage.set(mmkvStorageKeys.isAppleUser, false);
     return uid;
   } catch (error) {
     const message = "Something went wrong with google credential sign in";
@@ -313,6 +329,7 @@ export const signInWithAppleCredential = async (
   try {
     const uid = await csnSignInWithCredential(auth, credential, dispatch);
     mmkvStorage.set(mmkvStorageKeys.isAppleUser, true);
+    mmkvStorage.set(mmkvStorageKeys.isGoogleUser, false);
     return uid;
   } catch (error) {
     const message = "Something went wrong with apple credential sign in";

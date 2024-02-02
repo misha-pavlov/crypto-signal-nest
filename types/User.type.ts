@@ -10,7 +10,7 @@ export type UserType = {
   _id: string;
   name: string;
   email: string;
-  cryptoList: string[];
+  cryptoList: string;
   plan: "basic" | "silver" | "gold" | "platinum";
   signUpDate: string;
   verified: boolean;
