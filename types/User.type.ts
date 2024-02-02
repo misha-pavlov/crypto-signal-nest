@@ -15,9 +15,6 @@ export type UserType = {
   signUpDate: string;
   verified: boolean;
   avatar?: string | null;
-  password?: string;
-  withGoogle?: boolean;
-  withFacebook?: boolean;
 };
 export type UpdateUserData = {
   verified?: boolean;

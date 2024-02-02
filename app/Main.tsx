@@ -18,10 +18,13 @@ import { screens } from "../config/screens";
 import { hexToRgba } from "../helpers";
 import { Crypto } from "../types/Crypto.types";
 import EmptySvg from "../assets/svg/EmptySvg";
+import { useAppSelector } from "../store/store";
 
 const Main = () => {
   const router = useRouter();
   const navigation = useNavigation();
+  const userData = useAppSelector((state) => state.auth.userData);
+  console.log("🚀 ~ Main ~ userData:", userData);
   const [isEdit, setIsEdit] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedList, setSelectedList] = useState<string[]>([]);

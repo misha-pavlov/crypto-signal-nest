@@ -16,13 +16,19 @@ import {
   appleAuth as appleAuthLib,
   AppleButton,
 } from "@invertase/react-native-apple-authentication";
+// storage
 import { mmkvStorage } from "../config/mmkvStorage";
+// constants
 import { authSafeArea, mmkvStorageKeys } from "../config/constants";
-import { withStyledProvider } from "../hocs/withStyledProvider";
 import { screens } from "../config/screens";
 import { colors } from "../config/colors";
+// providers
+import { withStyledProvider } from "../hocs/withStyledProvider";
+// components
 import { AuthHeader, CSNInput, AuthBottom } from "../components";
+// hooks
 import { useAppDispatch } from "../store/store";
+// utils
 import { faceIdSignIn, signIn } from "../utils/actions/authActions";
 import { googleAuth as googleSignIn } from "../utils/google";
 import { appleAuth } from "../utils/apple";
@@ -49,8 +55,11 @@ const Login = () => {
         });
 
         if (biometricAuth.success) {
-          await dispatch(faceIdSignIn(savedUserId));
-          router.replace({ pathname: screens.Main });
+          const uid = await dispatch(faceIdSignIn(savedUserId));
+
+          if (uid) {
+            router.replace({ pathname: screens.Main });
+          }
         }
       } else {
         const compatible = await LocalAuthentication.hasHardwareAsync();
@@ -58,7 +67,7 @@ const Login = () => {
       }
     })();
     return () => abortController.abort();
-  });
+  }, []);
 
   const authHandler = useCallback(async () => {
     try {

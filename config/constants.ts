@@ -4,6 +4,10 @@ export const mmkvStorageKeys = {
   wasStartScreenShown: "wasStartScreenShown",
   savedUserId: "savedUserId",
   userData: "userData",
+  idToken: "idToken",
+  isGoogleUser: "isGoogleUser",
+  isAppleUser: "isAppleUser",
+  password: "password",
 };
 
 export const authSafeArea = { backgroundColor: colors.primaryBlack, flex: 1 };
