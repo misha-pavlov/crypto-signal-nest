@@ -7,28 +7,98 @@ import DraggableFlatList, {
   RenderItemParams,
   ScaleDecorator,
 } from "react-native-draggable-flatlist";
+import { child, getDatabase, off, onValue, ref } from "firebase/database";
+// providers
 import { withStyledProvider } from "../hocs/withStyledProvider";
+// constants
 import { colors } from "../config/colors";
+import { screens } from "../config/screens";
+// components
 import {
   CryptoListItem,
   CryptoSignalNestLoader,
   UserAvatar,
 } from "../components";
-import { screens } from "../config/screens";
-import { hexToRgba } from "../helpers";
-import { Crypto } from "../types/Crypto.types";
 import EmptySvg from "../assets/svg/EmptySvg";
-import { useAppSelector } from "../store/store";
+// helpers
+import { hexToRgba } from "../helpers";
+import { getFirebaseApp } from "../helpers/firebaseHelpers";
+// types
+import { Crypto } from "../types/Crypto.types";
+// hooks
+import { useAppDispatch, useAppSelector } from "../store/store";
+// store
+import { setStoredUser } from "../store/userSlice";
 
 const Main = () => {
   const router = useRouter();
   const navigation = useNavigation();
   const userData = useAppSelector((state) => state.auth.userData);
-  console.log("🚀 ~ Main ~ userData:", userData);
+  const storredUser = useAppSelector((state) => state.user.storredUser);
+  const currentUser = storredUser || userData;
+  const dispatch = useAppDispatch();
   const [isEdit, setIsEdit] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedList, setSelectedList] = useState<string[]>([]);
   const [cryptoArray, setCryptoArray] = useState<Crypto[]>([]);
+
+  useEffect(() => {
+    console.log("Subscribe to user data");
+    const app = getFirebaseApp();
+    const dbRef = ref(getDatabase(app));
+    const userChatsRef = child(dbRef, `users/${userData?._id}`);
+    const refs = [userChatsRef];
+
+    onValue(userChatsRef, (querySnapshot) => {
+      dispatch(setStoredUser({ user: querySnapshot.val() }));
+    });
+
+    () => {
+      console.log("Unsubscribe to user chats");
+      refs.forEach((ref) => off(ref));
+    };
+  }, []);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: withStyledProvider(() =>
+        isEdit ? (
+          <Text color={colors.red}>Delete({selectedList.length})</Text>
+        ) : (
+          <TouchableOpacity onPress={() => router.push(screens.Profile)}>
+            <HStack alignItems="center" space="md">
+              <UserAvatar uri={currentUser?.avatar} />
+              <Text fontSize={12} lineHeight={14} color={colors.white}>
+                Welcome {currentUser?.name}!
+              </Text>
+            </HStack>
+          </TouchableOpacity>
+        )
+      ),
+      headerRight: () =>
+        isEdit ? (
+          <Text
+            color={colors.primaryGreen}
+            onPress={() => {
+              setIsEdit(false);
+              setSelectedList([]);
+            }}
+          >
+            Done
+          </Text>
+        ) : (
+          <HStack alignItems="center" space="lg">
+            <TouchableOpacity onPress={() => router.push(screens.AddNewCrypto)}>
+              <Octicons name="plus" size={20} color={colors.white} />
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => setIsEdit(true)}>
+              <FontAwesome name="edit" size={20} color={colors.white} />
+            </TouchableOpacity>
+          </HStack>
+        ),
+    });
+  }, [navigation, isEdit, selectedList, currentUser]);
 
   const renderItem = useCallback(
     ({ item, drag }: RenderItemParams<Crypto>) => {
@@ -71,47 +141,6 @@ const Main = () => {
     },
     [isEdit, selectedList]
   );
-
-  useEffect(() => {
-    navigation.setOptions({
-      headerLeft: withStyledProvider(() =>
-        isEdit ? (
-          <Text color={colors.red}>Delete({selectedList.length})</Text>
-        ) : (
-          <TouchableOpacity onPress={() => router.push(screens.Profile)}>
-            <HStack alignItems="center" space="md">
-              <UserAvatar />
-              <Text fontSize={12} lineHeight={14} color={colors.white}>
-                Welcome [name]!
-              </Text>
-            </HStack>
-          </TouchableOpacity>
-        )
-      ),
-      headerRight: () =>
-        isEdit ? (
-          <Text
-            color={colors.primaryGreen}
-            onPress={() => {
-              setIsEdit(false);
-              setSelectedList([]);
-            }}
-          >
-            Done
-          </Text>
-        ) : (
-          <HStack alignItems="center" space="lg">
-            <TouchableOpacity onPress={() => router.push(screens.AddNewCrypto)}>
-              <Octicons name="plus" size={20} color={colors.white} />
-            </TouchableOpacity>
-
-            <TouchableOpacity onPress={() => setIsEdit(true)}>
-              <FontAwesome name="edit" size={20} color={colors.white} />
-            </TouchableOpacity>
-          </HStack>
-        ),
-    });
-  }, [navigation, isEdit, selectedList]);
 
   return (
     <View flex={1} backgroundColor={colors.primaryBlack} px={16}>
@@ -203,41 +232,3 @@ const Main = () => {
 };
 
 export default Main;
-
-const mockCryptoArray = [
-  {
-    id: "bitcoin",
-    icon: "https://static.coinstats.app/coins/1650455588819.png",
-    name: "Bitcoin",
-    symbol: "BTC",
-    price: "0",
-  },
-  {
-    id: "ethereum",
-    icon: "https://static.coinstats.app/coins/1650455629727.png",
-    name: "Ethereum",
-    symbol: "ETH",
-    price: "0",
-  },
-  {
-    id: "tether",
-    icon: "https://static.coinstats.app/coins/1650455771843.png",
-    name: "Tether",
-    symbol: "USDT",
-    price: "0",
-  },
-  {
-    id: "solana",
-    icon: "https://static.coinstats.app/coins/1701234596791.png",
-    name: "Solana",
-    symbol: "SOL",
-    price: "0",
-  },
-  {
-    id: "binance-coin",
-    icon: "https://static.coinstats.app/coins/1666608145347.png",
-    name: "BNB",
-    symbol: "BNB",
-    price: "0",
-  },
-];
