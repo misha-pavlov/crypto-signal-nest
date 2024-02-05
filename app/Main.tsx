@@ -15,11 +15,7 @@ import { withStyledProvider } from "../hocs/withStyledProvider";
 import { colors } from "../config/colors";
 import { screens } from "../config/screens";
 // components
-import {
-  CryptoListItem,
-  CryptoSignalNestLoader,
-  UserAvatar,
-} from "../components";
+import { CryptoListItem, UserAvatar } from "../components";
 import EmptySvg from "../assets/svg/EmptySvg";
 // helpers
 import { hexToRgba } from "../helpers";
@@ -39,10 +35,9 @@ const Main = () => {
   const dispatch = useAppDispatch();
 
   const currentUser = storredUser || userData;
-  const userCryptoList: Crypto[] = JSON.parse(currentUser?.cryptoList || '')
+  const userCryptoList: Crypto[] = JSON.parse(currentUser?.cryptoList || "");
 
   const [isEdit, setIsEdit] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [selectedList, setSelectedList] = useState<string[]>([]);
   const [cryptoArray, setCryptoArray] = useState<Crypto[]>(userCryptoList);
 
@@ -111,7 +106,7 @@ const Main = () => {
     if (!isEqual(userCryptoList, cryptoArray)) {
       setCryptoArray(userCryptoList);
     }
-  }, [userCryptoList, cryptoArray])
+  }, [userCryptoList, cryptoArray]);
 
   const renderItem = useCallback(
     ({ item, drag }: RenderItemParams<Crypto>) => {
@@ -161,85 +156,73 @@ const Main = () => {
         Watchlist
       </Text>
 
-      {isLoading ? (
-        <Center>
-          <CryptoSignalNestLoader />
-        </Center>
-      ) : (
-        <>
-          <HStack alignItems="center" mb={16}>
+      <HStack alignItems="center" mb={16}>
+        <Text
+          pr="35%"
+          fontSize={12}
+          lineHeight={14}
+          color={hexToRgba(colors.white, 0.7)}
+        >
+          Crypto
+        </Text>
+
+        {!isEdit && (
+          <>
             <Text
-              pr="35%"
+              pr="17%"
               fontSize={12}
               lineHeight={14}
               color={hexToRgba(colors.white, 0.7)}
             >
-              Crypto
+              Recommendation
             </Text>
 
-            {!isEdit && (
-              <>
-                <Text
-                  pr="17%"
-                  fontSize={12}
-                  lineHeight={14}
-                  color={hexToRgba(colors.white, 0.7)}
-                >
-                  Recommendation
-                </Text>
+            <Text
+              fontSize={12}
+              lineHeight={14}
+              color={hexToRgba(colors.white, 0.7)}
+            >
+              24h %
+            </Text>
+          </>
+        )}
+      </HStack>
 
-                <Text
-                  fontSize={12}
-                  lineHeight={14}
-                  color={hexToRgba(colors.white, 0.7)}
-                >
-                  24h %
-                </Text>
-              </>
-            )}
-          </HStack>
-
-          <DraggableFlatList
-            data={cryptoArray}
-            onDragEnd={({ data }) => setCryptoArray(data)}
-            keyExtractor={(item) => item.id}
-            renderItem={renderItem}
-            ItemSeparatorComponent={() => (
-              <Divider h={1} backgroundColor={colors.grey} my={9} />
-            )}
-            ListFooterComponent={() =>
-              !isEdit ? (
-                <Center mt={32}>
-                  <TouchableOpacity
-                    onPress={() => router.push(screens.AddNewCrypto)}
+      <DraggableFlatList
+        data={cryptoArray}
+        onDragEnd={({ data }) => setCryptoArray(data)}
+        keyExtractor={(item) => item.id}
+        renderItem={renderItem}
+        ItemSeparatorComponent={() => (
+          <Divider h={1} backgroundColor={colors.grey} my={9} />
+        )}
+        ListFooterComponent={() =>
+          !isEdit ? (
+            <Center mt={32}>
+              <TouchableOpacity
+                onPress={() => router.push(screens.AddNewCrypto)}
+              >
+                <HStack alignItems="center">
+                  <Octicons name="plus" size={20} color={colors.primaryGreen} />
+                  <Text
+                    fontSize={16}
+                    lineHeight={18}
+                    color={colors.primaryGreen}
+                    pl={4}
                   >
-                    <HStack alignItems="center">
-                      <Octicons
-                        name="plus"
-                        size={20}
-                        color={colors.primaryGreen}
-                      />
-                      <Text
-                        fontSize={16}
-                        lineHeight={18}
-                        color={colors.primaryGreen}
-                        pl={4}
-                      >
-                        Add crypto
-                      </Text>
-                    </HStack>
-                  </TouchableOpacity>
-                </Center>
-              ) : null
-            }
-            ListEmptyComponent={
-              <Center>
-                <EmptySvg />
-              </Center>
-            }
-          />
-        </>
-      )}
+                    Add crypto
+                  </Text>
+                </HStack>
+              </TouchableOpacity>
+            </Center>
+          ) : null
+        }
+        ListEmptyComponent={
+          <Center>
+            <EmptySvg />
+          </Center>
+        }
+      />
     </View>
   );
 };
