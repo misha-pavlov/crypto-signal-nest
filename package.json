@@ -34,6 +34,7 @@
     "expo-splash-screen": "~0.20.5",
     "expo-status-bar": "~1.6.0",
     "firebase": "10.4.0",
+    "lodash": "^4.17.21",
     "lottie-react-native": "5.1.6",
     "patch-package": "^8.0.0",
     "react": "18.2.0",
@@ -60,6 +61,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@types/lodash": "^4.14.202",
     "@types/react": "~18.2.14",
     "typescript": "^5.1.3"
   },

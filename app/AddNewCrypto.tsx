@@ -15,17 +15,28 @@ import DraggableFlatList, {
 } from "react-native-draggable-flatlist";
 import { customEvent } from "vexo-analytics";
 import { showMessage } from "react-native-flash-message";
+import { isEqual, map } from "lodash";
 import { colors } from "../config/colors";
 import { CryptoListItem, CryptoSignalNestLoader } from "../components";
 import { Crypto } from "../types/Crypto.types";
 import { useCallbackOnUnmount } from "../hooks";
+import { updateUserData } from "../utils/actions/userActions";
+import { useAppSelector } from "../store/store";
 
 const AddNewCrypto = () => {
   const router = useRouter();
   const { width } = useWindowDimensions();
+  const storredUser = useAppSelector((state) => state.user.storredUser);
+
+  const userId = storredUser?._id;
+  const userCryptoList: Crypto[] = JSON.parse(storredUser?.cryptoList || "");
+  const userCryptoListIds = map(userCryptoList, "id");
+
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedList, setSelectedList] = useState<string[]>([]);
+  const [selectedList, setSelectedList] = useState<Crypto[]>(userCryptoList);
   const [cryptoArray, setCryptoArray] = useState<Crypto[]>([]);
+
+  const selectedListIds = map(selectedList, "id");
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -64,20 +75,28 @@ const AddNewCrypto = () => {
     return () => abortController.abort();
   }, []);
 
-  useCallbackOnUnmount(() => console.log('on unmount'));
+  const onUnmount = useCallback(
+    async () =>
+      userId &&
+      !isEqual(userCryptoListIds, selectedListIds) &&
+      updateUserData(userId, { cryptoList: JSON.stringify(selectedList) }),
+    [selectedList, userCryptoListIds, selectedListIds]
+  );
+
+  useCallbackOnUnmount(onUnmount);
 
   const renderItem = useCallback(
     ({ item }: RenderItemParams<Crypto>) => {
       const id = item.id;
-      const isSelected = selectedList.includes(id);
+      const isSelected = !!selectedList.find((sl) => sl.id === id);
 
       const onRightSelected = () => {
-        let newArray: string[] = [];
+        let newArray: Crypto[] = [];
 
         if (isSelected) {
-          newArray = selectedList.filter((sl) => sl !== id);
+          newArray = selectedList.filter((sl) => sl.id !== id);
         } else {
-          newArray = [...selectedList, id];
+          newArray = [...selectedList, item];
         }
 
         setSelectedList(newArray);

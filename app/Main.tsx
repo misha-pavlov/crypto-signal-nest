@@ -8,6 +8,7 @@ import DraggableFlatList, {
   ScaleDecorator,
 } from "react-native-draggable-flatlist";
 import { child, getDatabase, off, onValue, ref } from "firebase/database";
+import { isEqual } from "lodash";
 // providers
 import { withStyledProvider } from "../hocs/withStyledProvider";
 // constants
@@ -35,13 +36,17 @@ const Main = () => {
   const navigation = useNavigation();
   const userData = useAppSelector((state) => state.auth.userData);
   const storredUser = useAppSelector((state) => state.user.storredUser);
-  const currentUser = storredUser || userData;
   const dispatch = useAppDispatch();
+
+  const currentUser = storredUser || userData;
+  const userCryptoList: Crypto[] = JSON.parse(currentUser?.cryptoList || '')
+
   const [isEdit, setIsEdit] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedList, setSelectedList] = useState<string[]>([]);
-  const [cryptoArray, setCryptoArray] = useState<Crypto[]>([]);
+  const [cryptoArray, setCryptoArray] = useState<Crypto[]>(userCryptoList);
 
+  // user subscription
   useEffect(() => {
     console.log("Subscribe to user data");
     const app = getFirebaseApp();
@@ -59,6 +64,7 @@ const Main = () => {
     };
   }, []);
 
+  // header
   useEffect(() => {
     navigation.setOptions({
       headerLeft: withStyledProvider(() =>
@@ -99,6 +105,13 @@ const Main = () => {
         ),
     });
   }, [navigation, isEdit, selectedList, currentUser]);
+
+  // update state
+  useEffect(() => {
+    if (!isEqual(userCryptoList, cryptoArray)) {
+      setCryptoArray(userCryptoList);
+    }
+  }, [userCryptoList, cryptoArray])
 
   const renderItem = useCallback(
     ({ item, drag }: RenderItemParams<Crypto>) => {

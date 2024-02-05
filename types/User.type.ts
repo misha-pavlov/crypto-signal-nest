@@ -18,4 +18,5 @@ export type UserType = {
 };
 export type UpdateUserData = {
   verified?: boolean;
+  cryptoList?: string;
 };

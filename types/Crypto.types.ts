@@ -2,7 +2,6 @@ export type Crypto = {
   id: string;
   icon: string;
   name: string;
-  price: string;
   symbol: string;
 };
 
