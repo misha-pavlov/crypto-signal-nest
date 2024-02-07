@@ -144,7 +144,7 @@ const AddNewCrypto = () => {
       <View pb={60}>
         {isLoading ? (
           <Center>
-            <CryptoSignalNestLoader backgroundColor={colors.grey} />
+            <CryptoSignalNestLoader />
           </Center>
         ) : (
           <DraggableFlatList
