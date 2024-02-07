@@ -8,7 +8,6 @@ import DraggableFlatList, {
   ScaleDecorator,
 } from "react-native-draggable-flatlist";
 import { child, getDatabase, off, onValue, ref } from "firebase/database";
-import { isEqual } from "lodash";
 // providers
 import { withStyledProvider } from "../hocs/withStyledProvider";
 // constants
@@ -26,6 +25,8 @@ import { Crypto } from "../types/Crypto.types";
 import { useAppDispatch, useAppSelector } from "../store/store";
 // store
 import { setStoredUser } from "../store/userSlice";
+// utils
+import { updateUserData } from "../utils/actions/userActions";
 
 const Main = () => {
   const router = useRouter();
@@ -36,10 +37,10 @@ const Main = () => {
 
   const currentUser = storredUser || userData;
   const userCryptoList: Crypto[] = JSON.parse(currentUser?.cryptoList || "");
+  const userId = currentUser?._id;
 
   const [isEdit, setIsEdit] = useState(false);
   const [selectedList, setSelectedList] = useState<string[]>([]);
-  const [cryptoArray, setCryptoArray] = useState<Crypto[]>(userCryptoList);
 
   // user subscription
   useEffect(() => {
@@ -100,13 +101,6 @@ const Main = () => {
         ),
     });
   }, [navigation, isEdit, selectedList, currentUser]);
-
-  // update state
-  useEffect(() => {
-    if (!isEqual(userCryptoList, cryptoArray)) {
-      setCryptoArray(userCryptoList);
-    }
-  }, [userCryptoList, cryptoArray]);
 
   const renderItem = useCallback(
     ({ item, drag }: RenderItemParams<Crypto>) => {
@@ -189,8 +183,10 @@ const Main = () => {
       </HStack>
 
       <DraggableFlatList
-        data={cryptoArray}
-        onDragEnd={({ data }) => setCryptoArray(data)}
+        data={userCryptoList}
+        onDragEnd={({ data }) =>
+          userId && updateUserData(userId, { cryptoList: JSON.stringify(data) })
+        }
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         ItemSeparatorComponent={() => (
