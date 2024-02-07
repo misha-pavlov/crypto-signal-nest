@@ -65,7 +65,21 @@ const Main = () => {
     navigation.setOptions({
       headerLeft: withStyledProvider(() =>
         isEdit ? (
-          <Text color={colors.red}>Delete({selectedList.length})</Text>
+          <Text
+            color={colors.red}
+            onPress={() =>
+              userId &&
+              updateUserData(userId, {
+                cryptoList: JSON.stringify(
+                  userCryptoList.filter(
+                    (userCrypto) => !selectedList.includes(userCrypto.id)
+                  )
+                ),
+              })
+            }
+          >
+            Delete({selectedList.length})
+          </Text>
         ) : (
           <TouchableOpacity onPress={() => router.push(screens.Profile)}>
             <HStack alignItems="center" space="md">
@@ -129,14 +143,13 @@ const Main = () => {
             isSelected={isSelected}
             onLongPress={drag}
             onLeftSelect={onLeftSelect}
-            onRowPress={(forecast) =>
-              !isEdit
-                ? router.push({
-                    pathname: screens.Crypto,
-                    params: { id, forecast: JSON.stringify(forecast) },
-                  })
-                : undefined
-            }
+            {...(!isEdit && {
+              onRowPress: (forecast) =>
+                router.push({
+                  pathname: screens.Crypto,
+                  params: { id, forecast: JSON.stringify(forecast) },
+                }),
+            })}
           />
         </ScaleDecorator>
       );
