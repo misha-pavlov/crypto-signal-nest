@@ -147,7 +147,10 @@ const Main = () => {
               onRowPress: (forecast) =>
                 router.push({
                   pathname: screens.Crypto,
-                  params: { id, forecast: JSON.stringify(forecast) },
+                  params: {
+                    crypto: JSON.stringify(item),
+                    forecast: JSON.stringify(forecast),
+                  },
                 }),
             })}
           />
