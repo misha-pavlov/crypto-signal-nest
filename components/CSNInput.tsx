@@ -16,6 +16,7 @@ type CSNInputPropsType = {
   placeholder: string;
   onChangeValue: (value: string) => void;
   label?: string;
+  value?: string;
   leftIcon?: typeof MailIcon;
   isRequired?: boolean;
   isPassword?: boolean;
@@ -26,6 +27,7 @@ type CSNInputPropsType = {
 
 const CSNInput: FC<CSNInputPropsType> = ({
   label,
+  value,
   placeholder,
   isPassword,
   leftIcon,
@@ -64,6 +66,7 @@ const CSNInput: FC<CSNInputPropsType> = ({
       <InputField
         placeholder={placeholder}
         color={colors.white}
+        value={value}
         type={isPassword ? "password" : undefined}
         autoCapitalize="none"
         onChangeText={(text) => onChangeValue(text)}

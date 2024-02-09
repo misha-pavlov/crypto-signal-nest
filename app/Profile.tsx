@@ -1,28 +1,79 @@
-import { View, Text, ScrollView, Center, VStack } from "@gluestack-ui/themed";
-import { useMemo } from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  Center,
+  VStack,
+  Button,
+} from "@gluestack-ui/themed";
+import { useCallback, useMemo } from "react";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { useRouter } from "expo-router";
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
+import { showMessage } from "react-native-flash-message";
 import { colors } from "../config/colors";
-import { MembershipPlan, ProfileInput, UserAvatar } from "../components";
+import {
+  CryptoSignalNestLoader,
+  MembershipPlan,
+  ProfileInput,
+  UserAvatar,
+} from "../components";
 import { membershipPlans } from "../config/constants";
+import { useAppDispatch, useAppSelector } from "../store/store";
+import { userLogout } from "../utils/actions/authActions";
+import { screens } from "../config/screens";
+import { getFirebaseApp } from "../helpers/firebaseHelpers";
 
 const Profile = () => {
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+  const storredUser = useAppSelector((state) => state.user.storredUser);
+  const userId = storredUser?._id;
+  const email = storredUser?.email;
+
   const membershipPlansMemo = useMemo(
     () =>
+      userId &&
       membershipPlans.map((membershipPlan) => (
         <MembershipPlan
+          userId={userId}
           key={membershipPlan._id}
-          isSelected={membershipPlan._id === "basic"}
+          isSelected={membershipPlan._id === storredUser?.plan}
           membershipPlan={membershipPlan}
         />
       )),
-    []
+    [storredUser]
   );
+
+  const onChangePassword = useCallback(async () => {
+    const app = getFirebaseApp();
+    const auth = getAuth(app);
+
+    if (email) {
+      await sendPasswordResetEmail(auth, email);
+
+      showMessage({
+        message: "We sent a mail with reseting password on your email",
+        type: "info",
+        titleStyle: { fontFamily: "Exo2-Bold" },
+      });
+    }
+  }, [email]);
+
+  if (!storredUser) {
+    return (
+      <Center flex={1} backgroundColor={colors.primaryBlack}>
+        <CryptoSignalNestLoader />
+      </Center>
+    );
+  }
 
   return (
     <ScrollView backgroundColor={colors.primaryBlack}>
       <View px={16}>
         {/* HEADER */}
         <Center>
-          <UserAvatar bigSize showEditIcon />
+          <UserAvatar bigSize showEditIcon uri={storredUser?.avatar} />
           <Text
             mt={16}
             fontFamily="$bold"
@@ -30,7 +81,7 @@ const Profile = () => {
             fontSize={16}
             lineHeight={19}
           >
-            User Name
+            {storredUser.name}
           </Text>
         </Center>
 
@@ -47,18 +98,22 @@ const Profile = () => {
         </Text>
 
         <VStack space="lg">
-          <ProfileInput label="Name" />
-          <ProfileInput label="Email" />
+          <ProfileInput
+            label="Name"
+            userId={storredUser._id}
+            value={storredUser.name}
+          />
+          <ProfileInput
+            label="Email"
+            userId={storredUser._id}
+            value={storredUser.email}
+          />
           <ProfileInput
             label="Password"
+            value="Password"
             isPassword
-            showIfSelected={
-              <ProfileInput
-                label="Repeate password"
-                selectedByDefault
-                isPassword
-              />
-            }
+            userId={storredUser._id}
+            onChangePassword={onChangePassword}
           />
         </VStack>
 
@@ -86,6 +141,19 @@ const Profile = () => {
             Next Payment due on 22/08/2022
           </Text>
         </View>
+
+        <TouchableOpacity
+          onPress={() => {
+            dispatch(userLogout());
+            router.replace(screens.StartScreen);
+          }}
+        >
+          <Button backgroundColor={colors.red} mb={32}>
+            <Text fontFamily="$bold" color={colors.white}>
+              Log out
+            </Text>
+          </Button>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );

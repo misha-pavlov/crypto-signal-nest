@@ -127,7 +127,9 @@ const saveDataToStorage = (token: string, userId: string, expiryDate: Date) => {
 };
 
 export const userLogout = () => {
+  console.log('1')
   return async (dispatch: AppDispatch) => {
+    console.log('2')
     mmkvStorage.clearAll();
     clearTimeout(timer);
     dispatch(logout());
