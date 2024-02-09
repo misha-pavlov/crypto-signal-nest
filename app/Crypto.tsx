@@ -90,7 +90,7 @@ const Crypto = () => {
         const captureUriSplit = captureUri.split("/");
         const fileName =
           captureUriSplit[captureUriSplit.length - 1].split(".")[0];
-        const urlString = await uploadImage(captureUri, "viewShots", fileName);
+        const urlString = await uploadImage(captureUri, fileName, "viewShots");
         const options = {
           title: "CryptoSignalNest",
           message: `Share ${crypto.name} with friends`,

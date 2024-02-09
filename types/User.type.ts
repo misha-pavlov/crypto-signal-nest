@@ -14,6 +14,7 @@ export type UserType = {
   plan: "basic" | "silver" | "gold" | "platinum";
   signUpDate: string;
   verified: boolean;
+  isAdmin?: boolean;
   avatar?: string | null;
 };
 export type UpdateUserData = {

@@ -8,11 +8,13 @@ import DraggableFlatList, {
   ScaleDecorator,
 } from "react-native-draggable-flatlist";
 import { child, getDatabase, off, onValue, ref } from "firebase/database";
+import { find } from "lodash";
 // providers
 import { withStyledProvider } from "../hocs/withStyledProvider";
 // constants
 import { colors } from "../config/colors";
 import { screens } from "../config/screens";
+import { membershipPlans } from "../config/constants";
 // components
 import { CryptoListItem, UserAvatar } from "../components";
 import EmptySvg from "../assets/svg/EmptySvg";
@@ -38,6 +40,12 @@ const Main = () => {
   const currentUser = storredUser || userData;
   const userCryptoList: Crypto[] = JSON.parse(currentUser?.cryptoList || "");
   const userId = currentUser?._id;
+  const currentUserPlan =
+    find(membershipPlans, ({ _id }) => _id === currentUser?.plan) ||
+    membershipPlans[0];
+  const isAdmin = currentUser?.isAdmin;
+  const showAddCrypto =
+    isAdmin || currentUserPlan?.limit > userCryptoList.length;
 
   const [isEdit, setIsEdit] = useState(false);
   const [selectedList, setSelectedList] = useState<string[]>([]);
@@ -104,9 +112,13 @@ const Main = () => {
           </Text>
         ) : (
           <HStack alignItems="center" space="lg">
-            <TouchableOpacity onPress={() => router.push(screens.AddNewCrypto)}>
-              <Octicons name="plus" size={20} color={colors.white} />
-            </TouchableOpacity>
+            {showAddCrypto && (
+              <TouchableOpacity
+                onPress={() => router.push(screens.AddNewCrypto)}
+              >
+                <Octicons name="plus" size={20} color={colors.white} />
+              </TouchableOpacity>
+            )}
 
             <TouchableOpacity onPress={() => setIsEdit(true)}>
               <FontAwesome name="edit" size={20} color={colors.white} />
@@ -114,7 +126,7 @@ const Main = () => {
           </HStack>
         ),
     });
-  }, [navigation, isEdit, selectedList, currentUser]);
+  }, [navigation, isEdit, selectedList, currentUser, showAddCrypto]);
 
   const renderItem = useCallback(
     ({ item, drag }: RenderItemParams<Crypto>) => {
@@ -209,7 +221,7 @@ const Main = () => {
           <Divider h={1} backgroundColor={colors.grey} my={9} />
         )}
         ListFooterComponent={() =>
-          !isEdit ? (
+          !isEdit && showAddCrypto ? (
             <Center mt={32}>
               <TouchableOpacity
                 onPress={() => router.push(screens.AddNewCrypto)}
