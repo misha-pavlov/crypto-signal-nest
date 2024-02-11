@@ -9,32 +9,94 @@ import {
 } from "@gluestack-ui/themed";
 import { useRouter } from "expo-router";
 import { useWindowDimensions } from "react-native";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import DraggableFlatList, {
   RenderItemParams,
 } from "react-native-draggable-flatlist";
+import { customEvent } from "vexo-analytics";
+import { showMessage } from "react-native-flash-message";
+import { isEqual, map } from "lodash";
 import { colors } from "../config/colors";
 import { CryptoListItem, CryptoSignalNestLoader } from "../components";
 import { Crypto } from "../types/Crypto.types";
+import { useCallbackOnUnmount } from "../hooks";
+import { updateUserData } from "../utils/actions/userActions";
+import { useAppSelector } from "../store/store";
 
 const AddNewCrypto = () => {
   const router = useRouter();
   const { width } = useWindowDimensions();
-  const [isLoading, setIsLoading] = useState(false);
-  const [selectedList, setSelectedList] = useState<string[]>([]);
+  const storredUser = useAppSelector((state) => state.user.storredUser);
+
+  const userId = storredUser?._id;
+  const userCryptoList: Crypto[] = JSON.parse(storredUser?.cryptoList || "");
+  const userCryptoListIds = map(userCryptoList, "id");
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedList, setSelectedList] = useState<Crypto[]>(userCryptoList);
+  const [cryptoArray, setCryptoArray] = useState<Crypto[]>([]);
+
+  const selectedListIds = map(selectedList, "id");
+
+  useEffect(() => {
+    const abortController = new AbortController();
+
+    const fetchData = async () => {
+      try {
+        const options: RequestInit = {
+          method: "GET",
+          // @ts-ignore - because headers should have X-API-KEY
+          headers: {
+            accept: "application/json",
+            "X-API-KEY": process.env.EXPO_PUBLIC_COIN_STATS_API_KEY,
+          },
+          signal: abortController.signal,
+        };
+
+        fetch("https://openapiv1.coinstats.app/coins?limit=50", options)
+          .then((response) => response.json())
+          .then((response) => setCryptoArray(response?.result || []))
+          .catch((err) => console.error(err))
+          .finally(() => setIsLoading(false));
+      } catch (error) {
+        const message = "Error to fetch cryptocurrency data";
+        console.error(message, error);
+        customEvent(message, error);
+        showMessage({
+          message,
+          type: "danger",
+          titleStyle: { fontFamily: "Exo2-Bold" },
+        });
+      }
+    };
+
+    fetchData();
+
+    return () => abortController.abort();
+  }, []);
+
+  const onUnmount = useCallback(
+    async () =>
+      userId &&
+      !isEqual(userCryptoListIds, selectedListIds) &&
+      updateUserData(userId, { cryptoList: JSON.stringify(selectedList) }),
+    [selectedList, userCryptoListIds, selectedListIds]
+  );
+
+  useCallbackOnUnmount(onUnmount);
 
   const renderItem = useCallback(
     ({ item }: RenderItemParams<Crypto>) => {
       const id = item.id;
-      const isSelected = selectedList.includes(id);
+      const isSelected = !!selectedList.find((sl) => sl.id === id);
 
       const onRightSelected = () => {
-        let newArray: string[] = [];
+        let newArray: Crypto[] = [];
 
         if (isSelected) {
-          newArray = selectedList.filter((sl) => sl !== id);
+          newArray = selectedList.filter((sl) => sl.id !== id);
         } else {
-          newArray = [...selectedList, id];
+          newArray = [...selectedList, item];
         }
 
         setSelectedList(newArray);
@@ -79,14 +141,14 @@ const AddNewCrypto = () => {
         </Text>
       </HStack>
 
-      <View>
+      <View pb={60}>
         {isLoading ? (
           <Center>
-            <CryptoSignalNestLoader backgroundColor={colors.grey} />
+            <CryptoSignalNestLoader />
           </Center>
         ) : (
           <DraggableFlatList
-            data={mockCryptoArray}
+            data={cryptoArray}
             renderItem={renderItem}
             ItemSeparatorComponent={() => (
               <Divider h={1} backgroundColor={colors.white} my={9} />
@@ -100,36 +162,3 @@ const AddNewCrypto = () => {
 };
 
 export default AddNewCrypto;
-
-const mockCryptoArray = [
-  {
-    id: "bitcoin",
-    icon: "https://static.coinstats.app/coins/1650455588819.png",
-    name: "Bitcoin",
-    symbol: "BTC",
-  },
-  {
-    id: "ethereum",
-    icon: "https://static.coinstats.app/coins/1650455629727.png",
-    name: "Ethereum",
-    symbol: "ETH",
-  },
-  {
-    id: "tether",
-    icon: "https://static.coinstats.app/coins/1650455771843.png",
-    name: "Tether",
-    symbol: "USDT",
-  },
-  {
-    id: "solana",
-    icon: "https://static.coinstats.app/coins/1701234596791.png",
-    name: "Solana",
-    symbol: "SOL",
-  },
-  {
-    id: "binance-coin",
-    icon: "https://static.coinstats.app/coins/1666608145347.png",
-    name: "BNB",
-    symbol: "BNB",
-  },
-];

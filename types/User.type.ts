@@ -1,5 +1,7 @@
+export type Plan = "basic" | "silver" | "gold" | "platinum";
+
 export type MembershipPlanType = {
-  _id: string;
+  _id: Plan;
   name: string;
   desc: string;
   price: string;
@@ -10,15 +12,18 @@ export type UserType = {
   _id: string;
   name: string;
   email: string;
-  cryptoList: string[];
-  plan: "basic" | "silver" | "gold" | "platinum";
+  cryptoList: string;
+  plan: Plan;
   signUpDate: string;
   verified: boolean;
+  isAdmin?: boolean;
   avatar?: string | null;
-  password?: string;
-  withGoogle?: boolean;
-  withFacebook?: boolean;
 };
 export type UpdateUserData = {
   verified?: boolean;
+  cryptoList?: string;
+  plan?: Plan;
+  name?: string;
+  email?: string;
+  avatar?: string;
 };

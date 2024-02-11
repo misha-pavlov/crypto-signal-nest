@@ -11,6 +11,7 @@ import {
 import { child, getDatabase, ref, set } from "firebase/database";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { showMessage } from "react-native-flash-message";
+import appleAuth from "@invertase/react-native-apple-authentication";
 import { getFirebaseApp } from "../../helpers/firebaseHelpers";
 import { AppDispatch } from "../../store/store";
 import { authenticate, logout } from "../../store/authSlice";
@@ -82,7 +83,6 @@ type CreateUserParamsType = {
   email: string;
   userId: string;
   avatar?: string | null;
-  withGoogle?: boolean;
 };
 
 const createUser = async (params: CreateUserParamsType) => {
@@ -91,12 +91,11 @@ const createUser = async (params: CreateUserParamsType) => {
     name,
     email,
     _id: userId,
-    cryptoList: [],
+    cryptoList: JSON.stringify([]),
     plan: "basic",
-    verified: !!params?.withGoogle,
+    verified: true,
     signUpDate: new Date().toISOString(),
-    avatar: params?.avatar,
-    withGoogle: params?.withGoogle,
+    avatar: params?.avatar || null,
   };
 
   const dbRef = ref(getDatabase());
@@ -128,7 +127,9 @@ const saveDataToStorage = (token: string, userId: string, expiryDate: Date) => {
 };
 
 export const userLogout = () => {
+  console.log('1')
   return async (dispatch: AppDispatch) => {
+    console.log('2')
     mmkvStorage.clearAll();
     clearTimeout(timer);
     dispatch(logout());
@@ -165,6 +166,7 @@ export const signIn = (params: { email: string; password: string }) => {
 
       dispatch(authenticate({ token: accessToken, userData }));
       saveDataToStorage(accessToken, uid, expiryDate);
+      mmkvStorage.set(mmkvStorageKeys.password, password);
 
       timer = setTimeout(() => {
         dispatch(userLogout());
@@ -192,40 +194,50 @@ export const signIn = (params: { email: string; password: string }) => {
 
 export const faceIdSignIn = (userId: string) => {
   return async (dispatch: AppDispatch) => {
-    const app = getFirebaseApp();
-    const auth = getAuth(app);
     const user = await getUserData(userId);
 
     try {
-      if (user && user?.password) {
-        const result = await signInWithEmailAndPassword(
-          auth,
-          user?.email,
-          user?.password
+      if (user) {
+        const isGoogleUser = mmkvStorage.getBoolean(
+          mmkvStorageKeys.isGoogleUser
         );
-        // @ts-ignore according type stsTokenManager doesn't exist, but acually it does
-        const { uid, stsTokenManager } = result.user;
-        const { accessToken, expirationTime } = stsTokenManager;
+        const isAppleUser = mmkvStorage.getBoolean(mmkvStorageKeys.isAppleUser);
 
-        const expiryDate = new Date(expirationTime);
-        const userData = await getUserData(uid);
-        const timeNow = new Date();
-        const millisecondsUntilExpiry = Number(expiryDate) - Number(timeNow);
+        if (isGoogleUser) {
+          const idToken = mmkvStorage.getString(mmkvStorageKeys.idToken);
 
-        dispatch(authenticate({ token: accessToken, userData }));
-        saveDataToStorage(accessToken, uid, expiryDate);
+          if (idToken) {
+            return signInWithGoogleCredential(idToken, dispatch);
+          }
 
-        timer = setTimeout(() => {
-          dispatch(userLogout());
-        }, millisecondsUntilExpiry);
+          throw new Error();
+        } else if (isAppleUser) {
+          const appleAuthRequestResponse = await appleAuth.performRequest({
+            requestedOperation: appleAuth.Operation.REFRESH,
+          });
+
+          const { identityToken: idToken, nonce: rawNonce } =
+            appleAuthRequestResponse;
+
+          if (idToken && rawNonce) {
+            return signInWithAppleCredential(idToken, rawNonce, dispatch);
+          }
+
+          throw new Error();
+        } else {
+          const password = mmkvStorage.getString(mmkvStorageKeys.password);
+          const email = user.email;
+
+          if (email && password) {
+            const { userId } = await dispatch(signIn({ email, password }));
+            return userId;
+          }
+
+          throw new Error();
+        }
       }
     } catch (error) {
-      const errorCode = (error as { code: string }).code;
-      let message = "Something went wrong";
-
-      if (errorCode === "auth/invalid-login-credentials") {
-        message = "The username or password was incorrect";
-      }
+      const message = "Something went wrong";
 
       showMessage({
         message,
@@ -244,18 +256,32 @@ const csnSignInWithCredential = async (
   dispatch: AppDispatch
 ) => {
   const result = await signInWithCredential(auth, credential);
-  console.log("🚀 ~ result:", result);
   // @ts-ignore according type stsTokenManager doesn't exist, but acually it does
   const { uid, stsTokenManager } = result.user;
   const { accessToken, expirationTime } = stsTokenManager;
 
   const expiryDate = new Date(expirationTime);
   const userData = await getUserData(uid);
-
   const timeNow = new Date();
   const millisecondsUntilExpiry = Number(expiryDate) - Number(timeNow);
 
-  dispatch(authenticate({ token: accessToken, userData }));
+  if (!userData) {
+    const newUser = result.user;
+    const createdUser = await createUser({
+      name:
+        newUser?.displayName ||
+        newUser?.email ||
+        `user ${Math.floor(10000 + Math.random() * 90000)}`,
+      email: newUser?.email || "no email :(",
+      userId: uid,
+      avatar: newUser?.photoURL,
+    });
+
+    dispatch(authenticate({ token: accessToken, userData: createdUser }));
+  } else {
+    dispatch(authenticate({ token: accessToken, userData }));
+  }
+
   saveDataToStorage(accessToken, uid, expiryDate);
 
   timer = setTimeout(() => {
@@ -275,6 +301,9 @@ export const signInWithGoogleCredential = async (
 
   try {
     const uid = await csnSignInWithCredential(auth, credential, dispatch);
+    mmkvStorage.set(mmkvStorageKeys.isGoogleUser, true);
+    mmkvStorage.set(mmkvStorageKeys.idToken, idToken);
+    mmkvStorage.set(mmkvStorageKeys.isAppleUser, false);
     return uid;
   } catch (error) {
     const message = "Something went wrong with google credential sign in";
@@ -298,10 +327,11 @@ export const signInWithAppleCredential = async (
   const auth = getAuth(app);
   const provider = new OAuthProvider("apple.com");
   const credential = provider.credential({ idToken, rawNonce });
-  console.log("🚀 ~ credential:", credential);
 
   try {
     const uid = await csnSignInWithCredential(auth, credential, dispatch);
+    mmkvStorage.set(mmkvStorageKeys.isAppleUser, true);
+    mmkvStorage.set(mmkvStorageKeys.isGoogleUser, false);
     return uid;
   } catch (error) {
     const message = "Something went wrong with apple credential sign in";

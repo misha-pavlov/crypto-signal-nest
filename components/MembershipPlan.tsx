@@ -5,17 +5,23 @@ import { TouchableOpacity } from "react-native";
 import { MembershipPlanType } from "../types/User.type";
 import { colors } from "../config/colors";
 import { hexToRgba } from "../helpers";
+import { updateUserData } from "../utils/actions/userActions";
 
 type MembershipPlanPropsType = {
+  userId: string;
   membershipPlan: MembershipPlanType;
   isSelected?: boolean;
 };
 
 const MembershipPlan: FC<MembershipPlanPropsType> = ({
+  userId,
   membershipPlan,
   isSelected,
 }) => (
-  <TouchableOpacity disabled={isSelected}>
+  <TouchableOpacity
+    disabled={isSelected}
+    onPress={() => updateUserData(userId, { plan: membershipPlan._id })}
+  >
     <View
       borderWidth={2}
       borderColor={
