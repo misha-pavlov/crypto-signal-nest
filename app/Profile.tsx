@@ -73,7 +73,12 @@ const Profile = () => {
       <View px={16}>
         {/* HEADER */}
         <Center>
-          <UserAvatar bigSize showEditIcon uri={storredUser?.avatar} />
+          <UserAvatar
+            bigSize
+            showEditIcon
+            uri={storredUser?.avatar}
+            userId={storredUser._id}
+          />
           <Text
             mt={16}
             fontFamily="$bold"

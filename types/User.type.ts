@@ -25,4 +25,5 @@ export type UpdateUserData = {
   plan?: Plan;
   name?: string;
   email?: string;
+  avatar?: string;
 };
