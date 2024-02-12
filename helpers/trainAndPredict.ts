@@ -41,11 +41,22 @@ const calculatePercentages = (
 
 const trainModel = async (X: tf.Tensor, y: tf.Tensor) => {
   const model = tf.sequential();
-  model.add(tf.layers.dense({ units: 1, inputShape: [1] }));
-  model.compile({ optimizer: "sgd", loss: "meanSquaredError" });
+  model.add(
+    tf.layers.dense({
+      units: 1,
+      activation: "relu",
+      inputShape: [1],
+      useBias: true,
+    })
+  );
+  model.compile({
+    optimizer: tf.train.adam(),
+    loss: tf.losses.meanSquaredError,
+    metrics: ["mse"],
+  });
 
   // Train the model
-  await model.fit(X, y, { epochs: 100 });
+  await model.fit(X, y, { epochs: 50, shuffle: true });
 
   return model;
 };

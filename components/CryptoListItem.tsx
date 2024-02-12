@@ -77,7 +77,7 @@ const CryptoListItem: FC<CryptoListItemPropsType> = ({
             .then(async (response) => {
               const timePrices = getTimePrices(response);
               const predictTime =
-                new Date(+new Date() + 86400000).getTime() / 1000;
+                new Date(+new Date() + 7 * 86400000).getTime() / 1000;
               const result = await trainAndPredict(timePrices, predictTime);
               setChart(response);
               setForecast(result);
