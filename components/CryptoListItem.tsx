@@ -15,6 +15,7 @@ import {
   hexToRgba,
   trainAndPredict,
   getPercentAndColor,
+  mlRegressionForcast,
 } from "../helpers";
 import { Crypto, ForecastType } from "../types/Crypto.types";
 
@@ -77,7 +78,12 @@ const CryptoListItem: FC<CryptoListItemPropsType> = ({
             .then(async (response) => {
               const timePrices = getTimePrices(response);
               const predictTime =
-                new Date(+new Date() + 7 * 86400000).getTime() / 1000;
+                new Date(+new Date() + 86400000).getTime() / 1000;
+              await mlRegressionForcast(timePrices, predictTime);
+              await mlRegressionForcast(
+                timePrices,
+                new Date(+new Date() + 2 * 86400000).getTime() / 1000
+              );
               const result = await trainAndPredict(timePrices, predictTime);
               setChart(response);
               setForecast(result);

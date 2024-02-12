@@ -118,6 +118,8 @@ const trainAndPredict = async (
   );
 
   const currentPrice = prices[prices.length - 1];
+  console.log("🚀 ~ currentPrice:", currentPrice);
+  console.log("🚀 ~ predictedPriceValues:", predictedPriceValues)
 
   const { buyPercentage, sellPercentage, holdPercentage } =
     calculatePercentages(
