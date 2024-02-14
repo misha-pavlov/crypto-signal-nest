@@ -1,12 +1,15 @@
-import { View, Text, HStack, Center, Divider } from "@gluestack-ui/themed";
+import {
+  View,
+  Text,
+  HStack,
+  Center,
+  Divider,
+  ScrollView,
+} from "@gluestack-ui/themed";
 import { useNavigation, useRouter } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import { TouchableOpacity } from "react-native";
 import { Octicons, FontAwesome } from "@expo/vector-icons";
-import DraggableFlatList, {
-  RenderItemParams,
-  ScaleDecorator,
-} from "react-native-draggable-flatlist";
 import { child, getDatabase, off, onValue, ref } from "firebase/database";
 import { find } from "lodash";
 // providers
@@ -129,7 +132,7 @@ const Main = () => {
   }, [navigation, isEdit, selectedList, currentUser, showAddCrypto]);
 
   const renderItem = useCallback(
-    ({ item, drag }: RenderItemParams<Crypto>) => {
+    ({ item }: { item: Crypto }) => {
       const id = item.id;
       const isSelected = selectedList.includes(id);
 
@@ -146,27 +149,25 @@ const Main = () => {
       };
 
       return (
-        <ScaleDecorator>
-          <CryptoListItem
-            crypto={item}
-            showRecommendation={!isEdit}
-            isSelectionList={isEdit}
-            left={isEdit}
-            isSelected={isSelected}
-            onLongPress={drag}
-            onLeftSelect={onLeftSelect}
-            {...(!isEdit && {
-              onRowPress: (forecast) =>
-                router.push({
-                  pathname: screens.Crypto,
-                  params: {
-                    crypto: JSON.stringify(item),
-                    forecast: JSON.stringify(forecast),
-                  },
-                }),
-            })}
-          />
-        </ScaleDecorator>
+        <CryptoListItem
+          crypto={item}
+          showRecommendation={!isEdit}
+          isSelectionList={isEdit}
+          left={isEdit}
+          isSelected={isSelected}
+          // onLongPress={drag}
+          onLeftSelect={onLeftSelect}
+          {...(!isEdit && {
+            onRowPress: (forecast) =>
+              router.push({
+                pathname: screens.Crypto,
+                params: {
+                  crypto: JSON.stringify(item),
+                  forecast: JSON.stringify(forecast),
+                },
+              }),
+          })}
+        />
       );
     },
     [isEdit, selectedList]
@@ -210,7 +211,8 @@ const Main = () => {
         )}
       </HStack>
 
-      <DraggableFlatList
+      {/* FIXME: FIX THE TROUBLE WITH DRAGABLE LIST = https://github.com/facebook/react-native/issues/34783 */}
+      {/* <DraggableFlatList
         data={userCryptoList}
         onDragEnd={({ data }) =>
           userId && updateUserData(userId, { cryptoList: JSON.stringify(data) })
@@ -246,7 +248,48 @@ const Main = () => {
             <EmptySvg />
           </Center>
         }
-      />
+      /> */}
+      <ScrollView>
+        {userCryptoList.length === 0 ? (
+          <Center>
+            <EmptySvg />
+          </Center>
+        ) : (
+          userCryptoList.map((item, index, array) => {
+            return (
+              <Fragment key={item.id}>
+                {renderItem({ item })}
+                {index !== array.length - 1 && (
+                  <Divider h={1} backgroundColor={colors.grey} my={9} />
+                )}
+                {index === array.length - 1 && !isEdit && showAddCrypto ? (
+                  <Center mt={32}>
+                    <TouchableOpacity
+                      onPress={() => router.push(screens.AddNewCrypto)}
+                    >
+                      <HStack alignItems="center">
+                        <Octicons
+                          name="plus"
+                          size={20}
+                          color={colors.primaryGreen}
+                        />
+                        <Text
+                          fontSize={16}
+                          lineHeight={18}
+                          color={colors.primaryGreen}
+                          pl={4}
+                        >
+                          Add crypto
+                        </Text>
+                      </HStack>
+                    </TouchableOpacity>
+                  </Center>
+                ) : null}
+              </Fragment>
+            );
+          })
+        )}
+      </ScrollView>
     </View>
   );
 };

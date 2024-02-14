@@ -6,10 +6,11 @@ import {
   InputField,
   Center,
   Divider,
+  ScrollView,
 } from "@gluestack-ui/themed";
 import { useRouter } from "expo-router";
 import { useWindowDimensions } from "react-native";
-import { useCallback, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import DraggableFlatList, {
   RenderItemParams,
 } from "react-native-draggable-flatlist";
@@ -86,7 +87,7 @@ const AddNewCrypto = () => {
   useCallbackOnUnmount(onUnmount);
 
   const renderItem = useCallback(
-    ({ item }: RenderItemParams<Crypto>) => {
+    ({ item }: { item: Crypto }) => {
       const id = item.id;
       const isSelected = !!selectedList.find((sl) => sl.id === id);
 
@@ -147,14 +148,25 @@ const AddNewCrypto = () => {
             <CryptoSignalNestLoader />
           </Center>
         ) : (
-          <DraggableFlatList
-            data={cryptoArray}
-            renderItem={renderItem}
-            ItemSeparatorComponent={() => (
-              <Divider h={1} backgroundColor={colors.white} my={9} />
-            )}
-            keyExtractor={(item) => item.id}
-          />
+          // <DraggableFlatList
+          //   data={cryptoArray}
+          //   renderItem={renderItem}
+          //   ItemSeparatorComponent={() => (
+          //     <Divider h={1} backgroundColor={colors.white} my={9} />
+          //   )}
+          //   keyExtractor={(item) => item.id}
+          // />
+
+          <ScrollView>
+            {cryptoArray.map((item, index, array) => (
+              <Fragment key={item.id}>
+                {renderItem({ item })}
+                {index !== array.length - 1 && (
+                  <Divider h={1} backgroundColor={colors.grey} my={9} />
+                )}
+              </Fragment>
+            ))}
+          </ScrollView>
         )}
       </View>
     </View>

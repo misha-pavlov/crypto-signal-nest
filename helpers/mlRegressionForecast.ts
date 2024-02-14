@@ -1,6 +1,6 @@
 const SLR = require("ml-regression").SLR;
 
-const mlRegressionForcast = (
+const mlRegressionForecast = (
   timeAndPriceData: number[][],
   newTimestamp: number
 ) => {
@@ -9,8 +9,7 @@ const mlRegressionForcast = (
 
   const model = new SLR(timestamps, prices);
 
-  const predictedPrice = model.predict(newTimestamp);
-  console.log("🚀 ~ predictedPrice:", predictedPrice);
+  return Math.ceil(model.predict(newTimestamp));
 };
 
-export default mlRegressionForcast;
+export default mlRegressionForecast;

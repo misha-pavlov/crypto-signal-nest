@@ -1,44 +1,6 @@
 import * as tf from "@tensorflow/tfjs";
 import "@tensorflow/tfjs-react-native";
 
-const calculatePercentages = (
-  predictedPrices: number[],
-  currentPrice: number
-) => {
-  const buyThreshold = 0.8;
-  const sellThreshold = 0.8;
-  const result = predictedPrices.reduce(
-    (acc, predictedPrice) => {
-      const buyPercentage = Math.min(
-        100,
-        Math.max(0, (predictedPrice / (currentPrice * buyThreshold) - 1) * 100)
-      );
-      const sellPercentage = Math.min(
-        100,
-        Math.max(0, (1 - predictedPrice / (currentPrice * sellThreshold)) * 100)
-      );
-      const holdPercentage = 100 - buyPercentage - sellPercentage;
-
-      if (!acc.buyPercentage || buyPercentage > acc.buyPercentage) {
-        acc.buyPercentage = Math.round(buyPercentage);
-      }
-
-      if (!acc.sellPercentage || sellPercentage > acc.sellPercentage) {
-        acc.sellPercentage = Math.round(sellPercentage);
-      }
-
-      if (!acc.holdPercentage || holdPercentage > acc.holdPercentage) {
-        acc.holdPercentage = Math.round(holdPercentage);
-      }
-
-      return acc;
-    },
-    { buyPercentage: 0, sellPercentage: 0, holdPercentage: 0 }
-  );
-
-  return result;
-};
-
 const trainModel = async (X: tf.Tensor, y: tf.Tensor) => {
   const model = tf.sequential();
   model.add(
@@ -118,20 +80,8 @@ const trainAndPredict = async (
   );
 
   const currentPrice = prices[prices.length - 1];
-  console.log("🚀 ~ currentPrice:", currentPrice);
-  console.log("🚀 ~ predictedPriceValues:", predictedPriceValues)
 
-  const { buyPercentage, sellPercentage, holdPercentage } =
-    calculatePercentages(
-      predictedPriceValues as unknown as number[],
-      currentPrice
-    );
-
-  return {
-    buyPercentage,
-    sellPercentage,
-    holdPercentage,
-  };
+  return { forcast: predictedPriceValues[0], currentPrice };
 };
 
 export default trainAndPredict;
