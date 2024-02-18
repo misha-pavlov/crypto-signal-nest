@@ -12,14 +12,19 @@
       "resizeMode": "contain",
       "backgroundColor": "#1D1D1F"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.milov123.cryptosignalnest",
       "entitlements": {
         "com.apple.developer.networking.wifi-info": true
       },
-      "googleServicesFile": "./GoogleService-Info.plist"
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "infoPlist": {
+        "NSFaceIDUsageDescription": "Allow $(PRODUCT_NAME) to use Face ID."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -27,13 +32,19 @@
         "backgroundColor": "#1D1D1F"
       },
       "package": "com.milov123.cryptosignalnest",
-      "googleServicesFile": "./google-services.json"
+      "googleServicesFile": "./google-services.json",
+      "permissions": [
+        "android.permission.USE_BIOMETRIC",
+        "android.permission.USE_FINGERPRINT",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/7afc6e18-7f83-43b5-8f32-30cea66cb7cc"
     },
     "plugins": [
       "expo-router",
@@ -43,8 +54,21 @@
           "faceIDPermission": "Allow $(PRODUCT_NAME) to use Face ID."
         }
       ],
-      ["@react-native-google-signin/google-signin"],
-      ["expo-image-picker"]
-    ]
+      [
+        "@react-native-google-signin/google-signin"
+      ],
+      [
+        "expo-image-picker"
+      ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "7afc6e18-7f83-43b5-8f32-30cea66cb7cc"
+      }
+    },
+    "runtimeVersion": "1.0.0"
   }
 }

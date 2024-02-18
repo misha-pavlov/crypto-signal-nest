@@ -8,9 +8,9 @@
     <true/>
     <key>EXUpdatesLaunchWaitMs</key>
     <integer>0</integer>
-    <key>EXUpdatesSDKVersion</key>
-    <string>49.0.0</string>
     <key>EXUpdatesURL</key>
-    <string>https://exp.host/@milov123/crypto-signal-nest</string>
+    <string>https://u.expo.dev/7afc6e18-7f83-43b5-8f32-30cea66cb7cc</string>
+    <key>EXUpdatesRuntimeVersion</key>
+    <string>1.0.0</string>
   </dict>
 </plist>
