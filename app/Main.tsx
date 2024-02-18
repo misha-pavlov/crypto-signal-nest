@@ -78,16 +78,19 @@ const Main = () => {
         isEdit ? (
           <Text
             color={colors.red}
-            onPress={() =>
-              userId &&
-              updateUserData(userId, {
-                cryptoList: JSON.stringify(
-                  userCryptoList.filter(
-                    (userCrypto) => !selectedList.includes(userCrypto.id)
-                  )
-                ),
-              })
-            }
+            onPress={() => {
+              if (userId) {
+                updateUserData(userId, {
+                  cryptoList: JSON.stringify(
+                    userCryptoList.filter(
+                      (userCrypto) => !selectedList.includes(userCrypto.id)
+                    )
+                  ),
+                });
+              }
+
+              setIsEdit(false);
+            }}
           >
             Delete({selectedList.length})
           </Text>

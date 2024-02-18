@@ -10,34 +10,44 @@ import {
 } from "@gluestack-ui/themed";
 import { useRouter } from "expo-router";
 import { useWindowDimensions } from "react-native";
-import { Fragment, useCallback, useEffect, useState } from "react";
-import DraggableFlatList, {
-  RenderItemParams,
-} from "react-native-draggable-flatlist";
+import React, {
+  Fragment,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { customEvent } from "vexo-analytics";
-import { showMessage } from "react-native-flash-message";
-import { isEqual, map } from "lodash";
+import FlashMessage from "react-native-flash-message";
+import { find, isEqual, map } from "lodash";
 import { colors } from "../config/colors";
 import { CryptoListItem, CryptoSignalNestLoader } from "../components";
 import { Crypto } from "../types/Crypto.types";
 import { useCallbackOnUnmount } from "../hooks";
 import { updateUserData } from "../utils/actions/userActions";
 import { useAppSelector } from "../store/store";
+import { membershipPlans } from "../config/constants";
 
 const AddNewCrypto = () => {
   const router = useRouter();
+  const flashMessageRef = useRef<FlashMessage>(null);
   const { width } = useWindowDimensions();
   const storredUser = useAppSelector((state) => state.user.storredUser);
 
   const userId = storredUser?._id;
   const userCryptoList: Crypto[] = JSON.parse(storredUser?.cryptoList || "");
   const userCryptoListIds = map(userCryptoList, "id");
+  const currentUserPlan =
+    find(membershipPlans, ({ _id }) => _id === storredUser?.plan) ||
+    membershipPlans[0];
+  const isAdmin = storredUser?.isAdmin;
 
   const [isLoading, setIsLoading] = useState(true);
   const [selectedList, setSelectedList] = useState<Crypto[]>(userCryptoList);
   const [cryptoArray, setCryptoArray] = useState<Crypto[]>([]);
 
   const selectedListIds = map(selectedList, "id");
+  const canAddMore = isAdmin || currentUserPlan?.limit > selectedListIds.length;
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -63,11 +73,14 @@ const AddNewCrypto = () => {
         const message = "Error to fetch cryptocurrency data";
         console.error(message, error);
         customEvent(message, error);
-        showMessage({
-          message,
-          type: "danger",
-          titleStyle: { fontFamily: "Exo2-Bold" },
-        });
+
+        if (flashMessageRef.current) {
+          flashMessageRef.current.showMessage({
+            message,
+            type: "danger",
+            titleStyle: { fontFamily: "Exo2-Bold" },
+          });
+        }
       }
     };
 
@@ -92,15 +105,25 @@ const AddNewCrypto = () => {
       const isSelected = !!selectedList.find((sl) => sl.id === id);
 
       const onRightSelected = () => {
-        let newArray: Crypto[] = [];
+        if (canAddMore) {
+          let newArray: Crypto[] = [];
 
-        if (isSelected) {
-          newArray = selectedList.filter((sl) => sl.id !== id);
+          if (isSelected) {
+            newArray = selectedList.filter((sl) => sl.id !== id);
+          } else {
+            newArray = [...selectedList, item];
+          }
+
+          setSelectedList(newArray);
         } else {
-          newArray = [...selectedList, item];
+          if (flashMessageRef.current) {
+            flashMessageRef.current.showMessage({
+              message: "You can not add more crytocurrencies in your list",
+              type: "danger",
+              titleStyle: { fontFamily: "Exo2-Bold" },
+            });
+          }
         }
-
-        setSelectedList(newArray);
       };
 
       return (
@@ -169,6 +192,7 @@ const AddNewCrypto = () => {
           </ScrollView>
         )}
       </View>
+      <FlashMessage ref={flashMessageRef} position="top" />
     </View>
   );
 };
